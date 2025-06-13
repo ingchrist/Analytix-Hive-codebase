@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
   async rewrites() {
     return [
       {
@@ -11,9 +12,10 @@ const nextConfig = {
   experimental: {
     allowedDevOrigins: ["https://*-3001.app.github.dev"],
   },
-  assetPrefix: process.env.CODESPACES ? `https://${process.env.CODESPACE_NAME}-3001.app.github.dev` : undefined,
-  webSocketPrefix: process.env.CODESPACES ? `wss://${process.env.CODESPACE_NAME}-3001.app.github.dev` : undefined,
-  // Enable CORS
+  // Configure for Codespaces environment
+  assetPrefix: process.env.CODESPACES ? `https://${process.env.CODESPACE_NAME}-3001.preview.app.github.dev` : '',
+  basePath: process.env.CODESPACES ? `/${process.env.CODESPACE_NAME}` : '',
+  // CORS headers
   async headers() {
     return [
       {
@@ -26,4 +28,13 @@ const nextConfig = {
       },
     ]
   },
+  // Server configuration
+  serverRuntimeConfig: {
+    PROJECT_ROOT: __dirname
+  },
+  publicRuntimeConfig: {
+    apiUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+  }
 }
+
+export default nextConfig
