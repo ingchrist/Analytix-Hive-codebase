@@ -2,9 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   experimental: {
-    // This allows requests from your Cloud Shell preview URL
-    allowedDevOrigins: ["https://3001-cs-88a5d951-d78f-4ca5-b4dc-e151e80a6bca.cs-europe-west1-xedi.cloudshell.dev"],
+    allowedDevOrigins: ["https://*-3001.app.github.dev"],
   },
+  // Add Codespaces-specific configuration
+  assetPrefix: process.env.CODESPACES ? `https://${process.env.CODESPACE_NAME}-3001.app.github.dev` : undefined,
+  webSocketPrefix: process.env.CODESPACES ? `wss://${process.env.CODESPACE_NAME}-3001.app.github.dev` : undefined,
 };
 
 export default nextConfig;
