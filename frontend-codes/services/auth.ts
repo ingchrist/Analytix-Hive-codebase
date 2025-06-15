@@ -2,10 +2,10 @@ import axios from 'axios';
 import { SignupFormData } from '@/lib/validations';
 import { LoginFormData } from '@/lib/validations';
 
-const apiurl=process.env.NEXT_PUBLIC_API_URL || ''; 
+const apiurl = ''; 
 export const signupUser = async (data: SignupFormData) => {
   try {
-    const response = await axios.post(`${apiurl}/auth/register`, data);
+    const response = await axios.post(`${apiurl}/api/auth/register`, data);
     return response.data;
   } catch (err: any) {
    
@@ -18,7 +18,7 @@ export const signupUser = async (data: SignupFormData) => {
 
 export const signinUser = async (data: LoginFormData) => {
   try {
-    const response = await axios.post(`${apiurl}/auth/login`, data);
+    const response = await axios.post(`${apiurl}/api/auth/login`, data);
     return response.data;
   } catch (err: any) {
    
