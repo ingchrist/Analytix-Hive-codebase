@@ -24,7 +24,7 @@ sudo service docker start
 
 ### 2. Build and Run the Application
 
-From the root of the project directory (e.g., `/mnt/c/Users/ing/CascadeProjects`) inside your WSL terminal, run the following command. This single command will build the Docker images, create the database, and start all services.
+From the root of the project directory  inside your WSL terminal, run the following command. This single command will build the Docker images, create the database, and start all services.
 
 ```bash
 docker compose up --build
