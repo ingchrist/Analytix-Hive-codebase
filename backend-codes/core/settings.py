@@ -14,6 +14,7 @@ from pathlib import Path
 import environ
 import os
 from datetime import timedelta
+import dj_database_url
 
 env = environ.Env()
 environ.Env.read_env()
@@ -85,14 +86,10 @@ WSGI_APPLICATION = "core.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "your_database_name",
-        "USER": "your_database_user",
-        "PASSWORD": "your_database_password",
-        "HOST": "localhost",
-        "PORT": "5432",
-    }
+    'default': dj_database_url.config(
+        default=env('DATABASE_URL', default='postgresql://postgres:postgres@localhost:5432/analytix_hive_db'),
+        conn_max_age=600
+    )
 }
 
 

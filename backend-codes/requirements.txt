@@ -7,3 +7,6 @@ pyjwt==2.8.0
 django-rest-passwordreset==1.4.0
 django-password-validators==1.7.3
 djangorestframework-simplejwt==5.3.1
+psycopg2-binary==2.9.9
+dj-database-url==2.1.0
+gunicorn==22.0.0
