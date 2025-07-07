@@ -14,7 +14,6 @@ type SignupResponse = any
 
 // Custom hook for signup mutation
 export const useSignupMutation = () => {
-    const router = useRouter();
 
   return useMutation<SignupResponse, Error, SignupFormData>({
     mutationFn: signupUser,
@@ -26,7 +25,6 @@ export const useSignupMutation = () => {
       toast.success('Welcome!', {
         description: `Account created successfully for`,
       });
-      router.push('/(private routes)/(student)/dashboard');
     },
     
     onError: (error) => {

@@ -86,6 +86,16 @@ export default function Header() {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-2 sm:space-x-4">
+            <Link href="/auth">
+              <Button variant="ghost" className="text-sm font-medium">
+                Sign In
+              </Button>
+            </Link>
+            <Link href="/auth">
+              <Button className="bg-[#FDB606] hover:bg-[#fd9a06] text-white text-sm font-medium">
+                Sign Up
+              </Button>
+            </Link>
             {/* Notifications */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

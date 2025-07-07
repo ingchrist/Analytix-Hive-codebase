@@ -38,6 +38,9 @@ const router = useRouter()
     try {
       // await onSubmit?.(data)
       signupMutation.mutate(data)
+      if (isSuccess) {
+        router.push("/")
+      }
     } catch (error) {
       console.error("Signup error:", error)
     }
