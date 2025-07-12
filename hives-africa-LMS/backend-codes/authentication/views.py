@@ -16,12 +16,12 @@ class RegisterView(generics.CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         email = request.data.get('email')
-        name = request.data.get('name')
+        username = request.data.get('username')
 
         if User.objects.filter(email=email).exists():
             return Response({'message': 'Email already exists'}, status=status.HTTP_400_BAD_REQUEST)
         
-        if User.objects.filter(name=name).exists():
+        if User.objects.filter(username=username).exists():
             return Response({'message': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
         
         serializer = self.get_serializer(data=request.data)

@@ -28,7 +28,7 @@ const router = useRouter()
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      name: "",
+      username: "",
       email: "",
       password: "",
     },
@@ -58,18 +58,18 @@ const router = useRouter()
 
           <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-                Name
+              <Label htmlFor="username" className="text-sm font-medium text-gray-700">
+                Username
               </Label>
               <Input
-                id="name"
-                type="name"
+                id="username"
+                type="text"
                 placeholder="divine"
                 className="h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
-                {...register("name")}
+                {...register("username")}
                 disabled={isFormLoading}
               />
-              {errors.name && <p className="text-sm text-red-600">{errors.name.message}</p>}
+              {errors.username && <p className="text-sm text-red-600">{errors.username.message}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium text-gray-700">
