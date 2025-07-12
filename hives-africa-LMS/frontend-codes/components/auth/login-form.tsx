@@ -46,7 +46,7 @@ export function LoginForm({
      signinMutation.mutate(data)
       if (signinMutation.isSuccess) {
         console.log("Login successful")
-        router.push("/")
+        router.push("/student/dashboard")
       }
         // await onSubmit?.(data)
     } catch (error) {
