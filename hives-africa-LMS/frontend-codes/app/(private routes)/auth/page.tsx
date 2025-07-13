@@ -1,31 +1,18 @@
 "use client"
 import { AuthContainer } from "@/components/auth/auth-container"
 import type { LoginFormData, SignupFormData } from "@/lib/validations"
-import { signinUser, signupUser } from "@/services/auth"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
 
 export default function AuthPage() {
-  const router = useRouter()
-
   const handleLogin = async (data: LoginFormData) => {
-    try {
-      await signinUser(data)
-      toast.success("Login successful")
-      router.push("/dashboard")
-    } catch (error: any) {
-      toast.error(error.message)
-    }
+    console.log("Login data:", data)
+    // Implement your login logic here
+    // Example: await signIn(data.email, data.password)
   }
 
   const handleSignup = async (data: SignupFormData) => {
-    try {
-      await signupUser(data)
-      toast.success("Signup successful")
-      router.push("/dashboard")
-    } catch (error: any) {
-      toast.error(error.message)
-    }
+    console.log("Signup data:", data)
+    // Implement your signup logic here
+    // Example: await createUser(data.email, data.password)
   }
 
   const handleForgotPassword = () => {

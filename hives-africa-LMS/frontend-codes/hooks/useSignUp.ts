@@ -23,7 +23,7 @@ export const useSignupMutation = () => {
       console.log('Signup successful:', data);
 
       toast.success('Welcome!', {
-        description: `Account created successfully`,
+        description: `Account created successfully for`,
       });
     },
     

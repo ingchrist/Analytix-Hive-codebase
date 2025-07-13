@@ -131,7 +131,7 @@ const Home = () => {
 
         <div className="flex items-center w-full lg:w-[55%]">
           <Image
-            src={"/assets/home-hero-image.png"}
+            src={"/assets/hive_africa_hero.png"}
             alt="Hero Image"
             width={400}
             height={400}

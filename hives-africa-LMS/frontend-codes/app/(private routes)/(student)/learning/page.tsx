@@ -268,6 +268,8 @@ export default function MyLearning() {
                   <Image
                     src={course.thumbnail || "/ai.png"}
                     alt={course.title}
+                    width={100}
+                    height={100}
                     className="w-full h-32 sm:h-48 object-cover rounded-t-lg"
                   />
                   <div className="absolute top-2 right-2">

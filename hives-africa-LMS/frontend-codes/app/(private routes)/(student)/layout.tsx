@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { Menu, X } from "lucide-react"
+import { Menu, PanelRight, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
@@ -81,7 +81,7 @@ export default function ResponsiveLayout({ children,  }: ResponsiveLayoutProps) 
             aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
             aria-expanded={isMobileMenuOpen}
           >
-            {isMobileMenuOpen ? <X className="h-5 w-5 text-gray-700" /> : <Menu className="h-5 w-5 text-gray-700" />}
+            {isMobileMenuOpen ? <X className="h-5 w-5 text-gray-700" /> : <PanelRight className="h-5 w-5 text-gray-700" />}
           </Button>
         )}
 

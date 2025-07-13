@@ -42,13 +42,15 @@ export function LoginForm({
 
   const handleFormSubmit = async (data: LoginFormData) => {
     try {
-      signinMutation.mutate(data, {
-        onSuccess: () => {
-          router.push("/dashboard");
-        },
-      });
+     console.log("Form data:", data)
+     signinMutation.mutate(data)
+      if (signinMutation.isSuccess) {
+        console.log("Login successful")
+        router.push("/")
+      }
+        // await onSubmit?.(data)
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Login error:", error)
     }
   }
 

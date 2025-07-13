@@ -208,6 +208,8 @@ export default function Cart() {
             <Image
               src="/ai.png?height=16&width=16"
               alt="Cart"
+              width={16}
+              height={16}
               className="h-16 w-16 text-gray-300 mx-auto mb-4"
             />
             <h3 className="text-xl font-semibold mb-2">Your cart is empty</h3>
@@ -247,6 +249,8 @@ export default function Cart() {
                     <Image
                       src={item.thumbnail || "/ai.png"}
                       alt={item.title}
+                      width={100}
+                      height={100}
                       className="w-full sm:w-32 h-20 object-cover rounded-lg"
                     />
                   </div>

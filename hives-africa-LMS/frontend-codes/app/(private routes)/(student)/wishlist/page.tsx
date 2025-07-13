@@ -127,6 +127,8 @@ const {courses}=useDashboard()
                   <Image
                     src={course.thumbnail || "/ai.png"}
                     alt={course.title}
+                    width={100}
+                    height={100}
                     className="w-full h-32 sm:h-48 object-cover rounded-t-lg cursor-pointer"
                     onClick={() => handleCourseClick(course)}
                   />

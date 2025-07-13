@@ -22,7 +22,7 @@ export const useSigninMutation = () => {
       console.log('Login successful:', data);
 
       toast.success('Welcome!', {
-        description: `successfully logedin`,
+        description: `Account created successfully for`,
       });
     },
     
