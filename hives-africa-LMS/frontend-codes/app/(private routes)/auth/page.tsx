@@ -1,41 +1,29 @@
-"use client"
-import { AuthContainer } from "@/components/auth/auth-container"
-import type { LoginFormData, SignupFormData } from "@/lib/validations"
+"use client";
+import AuthContainer from "@/components/auth/auth-container";
+import LoginForm from "@/components/auth/login-form";
+import SignupForm from "@/components/auth/signup-form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export default function AuthPage() {
-  const handleLogin = async (data: LoginFormData) => {
-    console.log("Login data:", data)
-    // Implement your login logic here
-    // Example: await signIn(data.email, data.password)
-  }
-
-  const handleSignup = async (data: SignupFormData) => {
-    console.log("Signup data:", data)
-    // Implement your signup logic here
-    // Example: await createUser(data.email, data.password)
-  }
-
-  const handleForgotPassword = () => {
-    console.log("Forgot password clicked")
-    // Implement forgot password logic
-    // Example: redirect to forgot password page
-  }
-
-  const handleGoogleSignIn = async () => {
-    console.log("Google sign in clicked")
-    // Implement Google OAuth logic
-    // Example: await signInWithGoogle()
-  }
-
+const AuthPage = () => {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <AuthContainer
-        initialMode="login"
-        onLogin={handleLogin}
-        onSignup={handleSignup}
-        onForgotPassword={handleForgotPassword}
-        onGoogleSignIn={handleGoogleSignIn}
-      />
-    </div>
-  )
-}
+    <AuthContainer
+      title="Welcome back"
+      description="Login to your account to continue"
+    >
+      <Tabs defaultValue="login" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="login">Login</TabsTrigger>
+          <TabsTrigger value="signup">Sign up</TabsTrigger>
+        </TabsList>
+        <TabsContent value="login">
+          <LoginForm />
+        </TabsContent>
+        <TabsContent value="signup">
+          <SignupForm />
+        </TabsContent>
+      </Tabs>
+    </AuthContainer>
+  );
+};
+
+export default AuthPage;

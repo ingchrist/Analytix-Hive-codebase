@@ -1,40 +1,18 @@
 
-"use client"
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { SignupFormData } from '@/lib/validations';
-import { signupUser } from '@/services/auth';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
-// Types for the signup request and response
+"use client";
+import { useMutation } from "@tanstack/react-query";
+import { TSignup, TSignupResponse } from "@/types";
+import { signup } from "@/services/auth";
+import { toast } from "sonner";
 
-
-type SignupResponse = any
-
-
-
-// Custom hook for signup mutation
-export const useSignupMutation = () => {
-
-  return useMutation<SignupResponse, Error, SignupFormData>({
-    mutationFn: signupUser,
-    
+export const useSignup = () => {
+  return useMutation<TSignupResponse, Error, TSignup>({
+    mutationFn: (data: TSignup) => signup(data),
     onSuccess: (data) => {
-   
-      console.log('Signup successful:', data);
-
-      toast.success('Welcome!', {
-        description: `Account created successfully for`,
-      });
+      toast.success("Account created successfully!");
     },
-    
     onError: (error) => {
-    console.error('Signup failed:', error.message);
-    toast.error('Signup Failed', {
-        description: error.message || 'Something went wrong. Please try again.',
-        duration: 5000,
-      });
+      toast.error(error.message || "An unknown error occurred");
     },
-    
-  
-  } );
+  });
 };

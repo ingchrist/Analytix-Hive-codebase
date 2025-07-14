@@ -1,4 +1,5 @@
 "use client"
+import AuthWrapper from "@/components/auth/AuthWrapper";
 
 import React, { useState, useEffect } from "react"
 import { Menu, PanelRight, X } from "lucide-react"
@@ -51,77 +52,75 @@ export default function ResponsiveLayout({ children,  }: ResponsiveLayoutProps) 
    
 
   return (
-    <>
+    <AuthWrapper>
+      <DashboardProvider>
+        <div className="min-h-screen bg-gray-50">
+          {/* Header */}
+          <Header />
 
-    <DashboardProvider>
-       
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-     <Header   />
+          <div className="flex relative">
+            {/* Desktop Sidebar - Hidden on mobile */}
+            <div className="hidden md:block"><Sidebar /></div>
 
-      <div className="flex relative">
-        {/* Desktop Sidebar - Hidden on mobile */}
-        <div className="hidden md:block"><Sidebar  /></div>
-
-        {/* Mobile Menu Button - Only visible on mobile */}
-        {isMobile && (
-          <Button
-            variant="outline"
-            size="icon"
-            className={cn(
-              "fixed top-20 left-4 z-50 md:hidden",
-              "bg-white shadow-lg border-2 border-gray-200",
-              "hover:bg-gray-50 hover:border-[#fdb606]",
-              "active:bg-gray-100 active:scale-95",
-              "transition-all duration-200 ease-in-out",
-              "w-12 h-12 rounded-full",
-              "focus:outline-none focus:ring-2 focus:ring-[#fdb606] focus:ring-offset-2",
-            )}
-            onClick={handleMobileMenuToggle}
-            aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-            aria-expanded={isMobileMenuOpen}
-          >
-            {isMobileMenuOpen ? <X className="h-5 w-5 text-gray-700" /> : <PanelRight className="h-5 w-5 text-gray-700" />}
-          </Button>
-        )}
-
-        {/* Mobile Sidebar Sheet */}
-        <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-          <SheetContent
-            side="left"
-            className={cn("p-0 w-72 sm:w-80", "bg-white border-r border-gray-200", "shadow-xl")}
-          >
-            {/* Sheet Header */}
-            <div className="flex items-center justify-between p-4 border-b bg-white sticky top-0 z-10">
-              <div className="text-xl font-bold text-[#fdb606]">LearnHub</div>
+            {/* Mobile Menu Button - Only visible on mobile */}
+            {isMobile && (
               <Button
-                variant="ghost"
+                variant="outline"
                 size="icon"
-                onClick={closeMobileMenu}
-                className="hover:bg-gray-100 rounded-full"
-                aria-label="Close navigation menu"
+                className={cn(
+                  "fixed top-20 left-4 z-50 md:hidden",
+                  "bg-white shadow-lg border-2 border-gray-200",
+                  "hover:bg-gray-50 hover:border-[#fdb606]",
+                  "active:bg-gray-100 active:scale-95",
+                  "transition-all duration-200 ease-in-out",
+                  "w-12 h-12 rounded-full",
+                  "focus:outline-none focus:ring-2 focus:ring-[#fdb606] focus:ring-offset-2"
+                )}
+                onClick={handleMobileMenuToggle}
+                aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+                aria-expanded={isMobileMenuOpen}
               >
-                <X className="h-5 w-5" />
+                {isMobileMenuOpen ? <X className="h-5 w-5 text-gray-700" /> : <PanelRight className="h-5 w-5 text-gray-700" />}
               </Button>
-            </div>
+            )}
 
-            {/* Sheet Content */}
-            <div className="bg-white h-full overflow-y-auto"><Sidebar/></div>
-          </SheetContent>
-        </Sheet>
+            {/* Mobile Sidebar Sheet */}
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetContent
+                side="left"
+                className={cn("p-0 w-72 sm:w-80", "bg-white border-r border-gray-200", "shadow-xl")}
+              >
+                {/* Sheet Header */}
+                <div className="flex items-center justify-between p-4 border-b bg-white sticky top-0 z-10">
+                  <div className="text-xl font-bold text-[#fdb606]">LearnHub</div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={closeMobileMenu}
+                    className="hover:bg-gray-100 rounded-full"
+                    aria-label="Close navigation menu"
+                  >
+                    <X className="h-5 w-5" />
+                  </Button>
+                </div>
 
-        {/* Main Content */}
-        <main className={cn("flex-1 transition-all duration-300", "p-4 md:p-6", isMobile ? "pt-20" : "pt-0")}>
-          {children}
-        </main>
-      </div>
+                {/* Sheet Content */}
+                <div className="bg-white h-full overflow-y-auto"><Sidebar /></div>
+              </SheetContent>
+            </Sheet>
 
-      {/* Mobile Menu Overlay */}
-      {isMobile && isMobileMenuOpen && (
-        <div className="fixed inset-0 bg-black/20 z-40 md:hidden" onClick={closeMobileMenu} aria-hidden="true" />
-      )}
-    </div>
-     </DashboardProvider>
-     </>
-  )
+            {/* Main Content */}
+            <main className={cn("flex-1 transition-all duration-300", "p-4 md:p-6", isMobile ? "pt-20" : "pt-0")}>
+              {children}
+            </main>
+          </div>
+
+          {/* Mobile Menu Overlay */}
+          {isMobile && isMobileMenuOpen && (
+            <div className="fixed inset-0 bg-black/20 z-40 md:hidden" onClick={closeMobileMenu} aria-hidden="true" />
+          )}
+        </div>
+      </DashboardProvider>
+    </AuthWrapper>
+  );
 }

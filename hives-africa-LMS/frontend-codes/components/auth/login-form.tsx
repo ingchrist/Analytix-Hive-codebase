@@ -1,72 +1,61 @@
-"use client"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { PasswordInput } from "@/components/ui/password-input"
-import { loginSchema, type LoginFormData } from "@/lib/validations"
-import { cn } from "@/lib/utils"
-import { useSigninMutation } from "@/hooks/useSignin"
-import { useRouter } from "next/navigation"
+"use client";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
+import { TLogin, loginSchema } from "@/types";
+import { cn } from "@/lib/utils";
+import { useSignin } from "@/hooks/useSignin";
+import { useRouter } from "next/navigation";
+
 interface LoginFormProps {
-  onSubmit?: (data: LoginFormData) => Promise<void> | void
-  onSignUpClick?: () => void
-  onForgotPasswordClick?: () => void
-  onGoogleSignIn?: () => Promise<void> | void
-  isLoading?: boolean
-  className?: string
+  className?: string;
 }
 
-export function LoginForm({
-  onSubmit,
-  onSignUpClick,
-  onForgotPasswordClick,
-  onGoogleSignIn,
-  isLoading = false,
-  className,
-}: LoginFormProps) {
-  const router = useRouter()
-  const signinMutation = useSigninMutation()
+export default function LoginForm({ className }: LoginFormProps) {
+  const router = useRouter();
+  const { mutate: signin, isPending } = useSignin();
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<LoginFormData>({
+    formState: { errors },
+  } = useForm<TLogin>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
-  })
+  });
 
-  const handleFormSubmit = async (data: LoginFormData) => {
-    try {
-     console.log("Form data:", data)
-     signinMutation.mutate(data)
-      if (signinMutation.isSuccess) {
-        console.log("Login successful")
-        router.push("/")
-      }
-        // await onSubmit?.(data)
-    } catch (error) {
-      console.error("Login error:", error)
-    }
-  }
-
-  const isFormLoading = isLoading || isSubmitting
+  const handleFormSubmit = async (data: TLogin) => {
+    signin(data, {
+      onSuccess: () => {
+        router.push("/");
+      },
+    });
+  };
 
   return (
     <div className={cn("w-full max-w-md mx-auto", className)}>
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-8">
         <div className="space-y-6">
           <div className="text-center">
-            <h1 className="text-2xl font-semibold text-gray-900">Login to your account</h1>
+            <h1 className="text-2xl font-semibold text-gray-900">
+              Login to your account
+            </h1>
           </div>
 
-          <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+          <form
+            onSubmit={handleSubmit(handleFormSubmit)}
+            className="space-y-4"
+          >
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+              <Label
+                htmlFor="email"
+                className="text-sm font-medium text-gray-700"
+              >
                 Email
               </Label>
               <Input
@@ -75,19 +64,23 @@ export function LoginForm({
                 placeholder="divine@hive.com"
                 className="h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
                 {...register("email")}
-                disabled={isFormLoading}
+                disabled={isPending}
               />
-              {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
+              {errors.email && (
+                <p className="text-sm text-red-600">{errors.email.message}</p>
+              )}
             </div>
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+                <Label
+                  htmlFor="password"
+                  className="text-sm font-medium text-gray-700"
+                >
                   Password
                 </Label>
                 <button
                   type="button"
-                  onClick={onForgotPasswordClick}
                   className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
                 >
                   Forgot ?
@@ -98,26 +91,29 @@ export function LoginForm({
                 placeholder="Enter your password"
                 className="h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
                 {...register("password")}
-                disabled={isFormLoading}
+                disabled={isPending}
               />
-              {errors.password && <p className="text-sm text-red-600">{errors.password.message}</p>}
+              {errors.password && (
+                <p className="text-sm text-red-600">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             <div className="space-y-3 pt-2">
               <Button
                 type="submit"
                 className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-md transition-colors"
-                disabled={isFormLoading}
+                disabled={isPending}
               >
-                {isFormLoading ? "Logging in..." : "Login now"}
+                {isPending ? "Logging in..." : "Login now"}
               </Button>
 
               <Button
                 type="button"
                 variant="outline"
                 className="w-full h-12 bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100 font-medium rounded-md transition-colors"
-                onClick={onGoogleSignIn}
-                disabled={isFormLoading}
+                disabled={isPending}
               >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                   <path
@@ -145,7 +141,7 @@ export function LoginForm({
           <div className="text-center">
             <span className="text-sm text-gray-600">
               {"Don't Have An Account ? "}
-              <button onClick={onSignUpClick} className="text-gray-900 font-medium hover:underline transition-all">
+              <button className="text-gray-900 font-medium hover:underline transition-all">
                 Sign Up
               </button>
             </span>
@@ -153,5 +149,5 @@ export function LoginForm({
         </div>
       </div>
     </div>
-  )
+  );
 }

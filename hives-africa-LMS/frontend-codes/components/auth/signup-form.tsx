@@ -1,78 +1,83 @@
-"use client"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { PasswordInput } from "@/components/ui/password-input"
-import { signupSchema, type SignupFormData } from "@/lib/validations"
-import { cn } from "@/lib/utils"
-import { useSignupMutation } from "@/hooks/useSignUp"
-import { useRouter } from "next/navigation"
+"use client";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
+import { TSignup, signupSchema } from "@/types";
+import { cn } from "@/lib/utils";
+import { useSignup } from "@/hooks/useSignUp";
+import { useRouter } from "next/navigation";
+
 interface SignupFormProps {
-  onSubmit?: (data: SignupFormData) => Promise<void> | void
-  onLoginClick?: () => void
-  onGoogleSignIn?: () => Promise<void> | void
-  isLoading?: boolean
-  className?: string
+  className?: string;
 }
 
-export function SignupForm({ onSubmit, onLoginClick, onGoogleSignIn, isLoading = false, className }: SignupFormProps) {
-const signupMutation = useSignupMutation()
-const router = useRouter()
- const {isSuccess}=signupMutation
+export default function SignupForm({ className }: SignupFormProps) {
+  const router = useRouter();
+  const { mutate: signup, isPending } = useSignup();
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<SignupFormData>({
+    formState: { errors },
+  } = useForm<TSignup>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      name: "",
+      username: "",
       email: "",
       password: "",
     },
-  })
+  });
 
-  const handleFormSubmit = async (data: SignupFormData) => {
-    try {
-      // await onSubmit?.(data)
-      signupMutation.mutate(data)
-      if (isSuccess) {
-        router.push("/")
-      }
-    } catch (error) {
-      console.error("Signup error:", error)
-    }
-  }
-
-  const isFormLoading = isLoading || isSubmitting
+  const handleFormSubmit = async (data: TSignup) => {
+    signup(data, {
+      onSuccess: () => {
+        router.push("/");
+      },
+    });
+  };
 
   return (
     <div className={cn("w-full max-w-md mx-auto", className)}>
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-8">
         <div className="space-y-6">
           <div className="text-center">
-            <h1 className="text-2xl font-semibold text-gray-900">Create an Account</h1>
+            <h1 className="text-2xl font-semibold text-gray-900">
+              Create an Account
+            </h1>
           </div>
 
-          <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+          <form
+            onSubmit={handleSubmit(handleFormSubmit)}
+            className="space-y-4"
+          >
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-                Name
+              <Label
+                htmlFor="username"
+                className="text-sm font-medium text-gray-700"
+              >
+                Username
               </Label>
               <Input
-                id="name"
-                type="name"
-                placeholder="divine"
+                id="username"
+                type="text"
+                placeholder="johndoe"
                 className="h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
-                {...register("name")}
-                disabled={isFormLoading}
+                {...register("username")}
+                disabled={isPending}
               />
-              {errors.name && <p className="text-sm text-red-600">{errors.name.message}</p>}
+              {errors.username && (
+                <p className="text-sm text-red-600">
+                  {errors.username.message}
+                </p>
+              )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+              <Label
+                htmlFor="email"
+                className="text-sm font-medium text-gray-700"
+              >
                 Email
               </Label>
               <Input
@@ -81,13 +86,18 @@ const router = useRouter()
                 placeholder="divine@hive.com"
                 className="h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
                 {...register("email")}
-                disabled={isFormLoading}
+                disabled={isPending}
               />
-              {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
+              {errors.email && (
+                <p className="text-sm text-red-600">{errors.email.message}</p>
+              )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+              <Label
+                htmlFor="password"
+                className="text-sm font-medium text-gray-700"
+              >
                 Password
               </Label>
               <PasswordInput
@@ -95,20 +105,12 @@ const router = useRouter()
                 placeholder="Enter your password"
                 className="h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
                 {...register("password")}
-                disabled={isFormLoading}
+                disabled={isPending}
               />
               {errors.password && (
-                <div className="text-sm text-red-600">
-                  <p className="font-medium">Password must:</p>
-                  <ul className="list-disc list-inside space-y-1 mt-1">
-                    {errors.password.message?.includes("8 characters") && <li>Be at least 8 characters long</li>}
-                    {errors.password.message?.includes("letter") && <li>Contain at least one letter</li>}
-                    {errors.password.message?.includes("number") && <li>Contain at least one number</li>}
-                    {errors.password.message?.includes("special character") && (
-                      <li>Contain at least one special character</li>
-                    )}
-                  </ul>
-                </div>
+                <p className="text-sm text-red-600">
+                  {errors.password.message}
+                </p>
               )}
             </div>
 
@@ -116,17 +118,16 @@ const router = useRouter()
               <Button
                 type="submit"
                 className="w-full h-12 bg-[#FDB606] hover:bg-[#fd9a06] text-white font-medium rounded-md transition-colors"
-                disabled={isFormLoading}
+                disabled={isPending}
               >
-                {isFormLoading ? "Creating account..." : "Create account"}
+                {isPending ? "Creating account..." : "Create account"}
               </Button>
 
               <Button
                 type="button"
                 variant="outline"
                 className="w-full h-12 bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100 font-medium rounded-md transition-colors"
-                onClick={onGoogleSignIn}
-                disabled={isFormLoading}
+                disabled={isPending}
               >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                   <path
@@ -154,7 +155,7 @@ const router = useRouter()
           <div className="text-center">
             <span className="text-sm text-gray-600">
               {"Already Have An Account ? "}
-              <button onClick={onLoginClick} className="text-gray-900 font-medium hover:underline transition-all">
+              <button className="text-gray-900 font-medium hover:underline transition-all">
                 Log In
               </button>
             </span>
@@ -162,5 +163,5 @@ const router = useRouter()
         </div>
       </div>
     </div>
-  )
+  );
 }

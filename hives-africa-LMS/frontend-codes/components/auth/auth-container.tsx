@@ -1,53 +1,28 @@
-"use client"
-
-import * as React from "react"
-import { LoginForm } from "./login-form"
-import { SignupForm } from "./signup-form"
-import type { LoginFormData, SignupFormData } from "@/lib/validations"
-
-type AuthMode = "login" | "signup"
+"use client";
+import React from "react";
 
 interface AuthContainerProps {
-  initialMode?: AuthMode
-  onLogin?: (data: LoginFormData) => Promise<void> | void
-  onSignup?: (data: SignupFormData) => Promise<void> | void
-  onForgotPassword?: () => void
-  onGoogleSignIn?: () => Promise<void> | void
-  isLoading?: boolean
+  title: string;
+  description: string;
+  children: React.ReactNode;
 }
 
-export function AuthContainer({
-  initialMode = "login",
-  onLogin,
-  onSignup,
-  onForgotPassword,
-  onGoogleSignIn,
-  isLoading = false,
+export default function AuthContainer({
+  title,
+  description,
+  children,
 }: AuthContainerProps) {
-  const [mode, setMode] = React.useState<AuthMode>(initialMode)
-
-  const handleModeSwitch = (newMode: AuthMode) => {
-    setMode(newMode)
-  }
-
-  if (mode === "signup") {
-    return (
-      <SignupForm
-        onSubmit={onSignup}
-        onLoginClick={() => handleModeSwitch("login")}
-        onGoogleSignIn={onGoogleSignIn}
-        isLoading={isLoading}
-      />
-    )
-  }
-
   return (
-    <LoginForm
-      onSubmit={onLogin}
-      onSignUpClick={() => handleModeSwitch("signup")}
-      onForgotPasswordClick={onForgotPassword}
-      onGoogleSignIn={onGoogleSignIn}
-      isLoading={isLoading}
-    />
-  )
+    <div className="w-full max-w-md mx-auto">
+      <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-8">
+        <div className="space-y-6">
+          <div className="text-center">
+            <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
+            <p className="text-gray-500">{description}</p>
+          </div>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
 }
