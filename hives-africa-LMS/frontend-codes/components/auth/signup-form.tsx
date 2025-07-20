@@ -24,13 +24,15 @@ export default function SignupForm({ className }: SignupFormProps) {
   } = useForm<TSignup>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      username: "",
       email: "",
       password: "",
+      first_name: "",
+      last_name: "",
     },
   });
 
   const handleFormSubmit = async (data: TSignup) => {
+    console.log("Submitting data:", data);
     signup(data, {
       onSuccess: () => {
         router.push("/");
@@ -52,27 +54,47 @@ export default function SignupForm({ className }: SignupFormProps) {
             onSubmit={handleSubmit(handleFormSubmit)}
             className="space-y-4"
           >
+            
             <div className="space-y-2">
               <Label
-                htmlFor="username"
+                htmlFor="first_name"
                 className="text-sm font-medium text-gray-700"
               >
-                Username
+                First Name
               </Label>
               <Input
-                id="username"
+                id="first_name"
                 type="text"
-                placeholder="johndoe"
+                placeholder="John"
                 className="h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
-                {...register("username")}
+                {...register("first_name")}
                 disabled={isPending}
               />
-              {errors.username && (
-                <p className="text-sm text-red-600">
-                  {errors.username.message}
-                </p>
+              {errors.first_name && (
+                <p className="text-sm text-red-600">{errors.first_name.message}</p>
               )}
             </div>
+
+            <div className="space-y-2">
+              <Label
+                htmlFor="last_name"
+                className="text-sm font-medium text-gray-700"
+              >
+                Last Name
+              </Label>
+              <Input
+                id="last_name"
+                type="text"
+                placeholder="Doe"
+                className="h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                {...register("last_name")}
+                disabled={isPending}
+              />
+              {errors.last_name && (
+                <p className="text-sm text-red-600">{errors.last_name.message}</p>
+              )}
+            </div>
+
             <div className="space-y-2">
               <Label
                 htmlFor="email"

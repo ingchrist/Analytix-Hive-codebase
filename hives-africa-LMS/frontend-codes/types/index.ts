@@ -6,9 +6,10 @@ export const loginSchema = z.object({
 });
 
 export const signupSchema = z.object({
-  username: z.string().min(1, "Username is required"),
   email: z.string().email(),
   password: z.string().min(8, "Password must be at least 8 characters"),
+  first_name: z.string().min(1, "First name is required"),
+  last_name: z.string().min(1, "Last name is required"),
 });
 
 export type TLogin = z.infer<typeof loginSchema>;
@@ -18,7 +19,6 @@ export interface TLoginResponse {
   user: {
     id: string;
     email: string;
-    username: string;
   };
   refresh: string;
   access: string;
@@ -28,7 +28,6 @@ export interface TSignupResponse {
   user: {
     id:string;
     email: string;
-    username: string;
   };
   refresh: string;
   access: string;
