@@ -128,9 +128,9 @@ const {  user, enrolledCourses,  handleTabChange} = useDashboard()
                   <Image
                     src={course.thumbnail || "/ai.png"}
                     alt={course.title}
+                    className="w-full h-24 sm:h-32 object-cover rounded mb-3"
                     width={100}
                     height={100}
-                    className="w-full h-24 sm:h-32 object-cover rounded mb-3"
                   />
                   <h3 className="font-semibold mb-2 line-clamp-2 text-sm sm:text-base">{course.title}</h3>
                   <div className="flex items-center space-x-2 mb-3">

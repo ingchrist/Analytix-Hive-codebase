@@ -1,105 +1,78 @@
-"use client";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { PasswordInput } from "@/components/ui/password-input";
-import { TSignup, signupSchema } from "@/types";
-import { cn } from "@/lib/utils";
-import { useSignup } from "@/hooks/useSignUp";
-import { useRouter } from "next/navigation";
-
+"use client"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { PasswordInput } from "@/components/ui/password-input"
+import { signupSchema, type SignupFormData } from "@/lib/validations"
+import { cn } from "@/lib/utils"
+import { useSignupMutation } from "@/hooks/useSignUp"
+import { useRouter } from "next/navigation"
 interface SignupFormProps {
-  className?: string;
+  onSubmit?: (data: SignupFormData) => Promise<void> | void
+  onLoginClick?: () => void
+  onGoogleSignIn?: () => Promise<void> | void
+  isLoading?: boolean
+  className?: string
 }
 
-export default function SignupForm({ className }: SignupFormProps) {
-  const router = useRouter();
-  const { mutate: signup, isPending } = useSignup();
+export function SignupForm({ onSubmit, onLoginClick, onGoogleSignIn, isLoading = false, className }: SignupFormProps) {
+const signupMutation = useSignupMutation()
+const router = useRouter()
+ const {isSuccess}=signupMutation
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<TSignup>({
+    formState: { errors, isSubmitting },
+  } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
-      first_name: "",
-      last_name: "",
     },
-  });
+  })
 
-  const handleFormSubmit = async (data: TSignup) => {
-    console.log("Submitting data:", data);
-    signup(data, {
-      onSuccess: () => {
-        router.push("/");
-      },
-    });
-  };
+  const handleFormSubmit = async (data: SignupFormData) => {
+    try {
+      // await onSubmit?.(data)
+      signupMutation.mutate(data)
+      if (isSuccess) {
+        router.push("/")
+      }
+    } catch (error) {
+      console.error("Signup error:", error)
+    }
+  }
+
+  const isFormLoading = isLoading || isSubmitting
 
   return (
     <div className={cn("w-full max-w-md mx-auto", className)}>
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-8">
         <div className="space-y-6">
           <div className="text-center">
-            <h1 className="text-2xl font-semibold text-gray-900">
-              Create an Account
-            </h1>
+            <h1 className="text-2xl font-semibold text-gray-900">Create an Account</h1>
           </div>
 
-          <form
-            onSubmit={handleSubmit(handleFormSubmit)}
-            className="space-y-4"
-          >
-            
+          <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <Label
-                htmlFor="first_name"
-                className="text-sm font-medium text-gray-700"
-              >
-                First Name
+              <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                Name
               </Label>
               <Input
-                id="first_name"
-                type="text"
-                placeholder="John"
+                id="name"
+                type="name"
+                placeholder="divine"
                 className="h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
-                {...register("first_name")}
-                disabled={isPending}
+                {...register("name")}
+                disabled={isFormLoading}
               />
-              {errors.first_name && (
-                <p className="text-sm text-red-600">{errors.first_name.message}</p>
-              )}
+              {errors.name && <p className="text-sm text-red-600">{errors.name.message}</p>}
             </div>
-
             <div className="space-y-2">
-              <Label
-                htmlFor="last_name"
-                className="text-sm font-medium text-gray-700"
-              >
-                Last Name
-              </Label>
-              <Input
-                id="last_name"
-                type="text"
-                placeholder="Doe"
-                className="h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
-                {...register("last_name")}
-                disabled={isPending}
-              />
-              {errors.last_name && (
-                <p className="text-sm text-red-600">{errors.last_name.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label
-                htmlFor="email"
-                className="text-sm font-medium text-gray-700"
-              >
+              <Label htmlFor="email" className="text-sm font-medium text-gray-700">
                 Email
               </Label>
               <Input
@@ -108,18 +81,13 @@ export default function SignupForm({ className }: SignupFormProps) {
                 placeholder="divine@hive.com"
                 className="h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
                 {...register("email")}
-                disabled={isPending}
+                disabled={isFormLoading}
               />
-              {errors.email && (
-                <p className="text-sm text-red-600">{errors.email.message}</p>
-              )}
+              {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
             </div>
 
             <div className="space-y-2">
-              <Label
-                htmlFor="password"
-                className="text-sm font-medium text-gray-700"
-              >
+              <Label htmlFor="password" className="text-sm font-medium text-gray-700">
                 Password
               </Label>
               <PasswordInput
@@ -127,12 +95,20 @@ export default function SignupForm({ className }: SignupFormProps) {
                 placeholder="Enter your password"
                 className="h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
                 {...register("password")}
-                disabled={isPending}
+                disabled={isFormLoading}
               />
               {errors.password && (
-                <p className="text-sm text-red-600">
-                  {errors.password.message}
-                </p>
+                <div className="text-sm text-red-600">
+                  <p className="font-medium">Password must:</p>
+                  <ul className="list-disc list-inside space-y-1 mt-1">
+                    {errors.password.message?.includes("8 characters") && <li>Be at least 8 characters long</li>}
+                    {errors.password.message?.includes("letter") && <li>Contain at least one letter</li>}
+                    {errors.password.message?.includes("number") && <li>Contain at least one number</li>}
+                    {errors.password.message?.includes("special character") && (
+                      <li>Contain at least one special character</li>
+                    )}
+                  </ul>
+                </div>
               )}
             </div>
 
@@ -140,16 +116,17 @@ export default function SignupForm({ className }: SignupFormProps) {
               <Button
                 type="submit"
                 className="w-full h-12 bg-[#FDB606] hover:bg-[#fd9a06] text-white font-medium rounded-md transition-colors"
-                disabled={isPending}
+                disabled={isFormLoading}
               >
-                {isPending ? "Creating account..." : "Create account"}
+                {isFormLoading ? "Creating account..." : "Create account"}
               </Button>
 
               <Button
                 type="button"
                 variant="outline"
                 className="w-full h-12 bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100 font-medium rounded-md transition-colors"
-                disabled={isPending}
+                onClick={onGoogleSignIn}
+                disabled={isFormLoading}
               >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                   <path
@@ -177,7 +154,7 @@ export default function SignupForm({ className }: SignupFormProps) {
           <div className="text-center">
             <span className="text-sm text-gray-600">
               {"Already Have An Account ? "}
-              <button className="text-gray-900 font-medium hover:underline transition-all">
+              <button onClick={onLoginClick} className="text-gray-900 font-medium hover:underline transition-all">
                 Log In
               </button>
             </span>
@@ -185,5 +162,5 @@ export default function SignupForm({ className }: SignupFormProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }

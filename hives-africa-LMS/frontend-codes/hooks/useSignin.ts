@@ -1,19 +1,39 @@
 
-"use client";
-import { useMutation } from "@tanstack/react-query";
-import { TLogin, TLoginResponse } from "@/types";
-import { signin } from "@/services/auth";
-import { toast } from "sonner";
+"use client"
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { LoginFormData } from '@/lib/validations';
+import { signinUser } from '@/services/auth';
+import { toast } from 'sonner';
 
-export const useSignin = () => {
-  return useMutation<TLoginResponse, Error, TLogin>({
-    mutationFn: (data: TLogin) => signin(data),
+
+
+type SignupResponse = any
+
+
+
+// Custom hook for signup mutation
+export const useSigninMutation = () => {
+
+  return useMutation<SignupResponse, Error, LoginFormData>({
+    mutationFn: signinUser,
+    
     onSuccess: (data) => {
-      localStorage.setItem("token", data.access);
-      toast.success("Logged in successfully!");
+   
+      console.log('Login successful:', data);
+
+      toast.success('Welcome!', {
+        description: `successfully logedin`,
+      });
     },
+    
     onError: (error) => {
-      toast.error(error.message || "An unknown error occurred");
+    console.error('Signin failed:', error.message);
+    toast.error('Signup Failed', {
+        description: error.message || 'Something went wrong. Please try again.',
+        duration: 5000,
+      });
     },
-  });
+    
+  
+  } );
 };

@@ -1,0 +1,14 @@
+services:
+  - type: web
+    runtime: docker
+    name: analytix-backend
+    dockerfilePath: ./backend-codes/Dockerfile
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+  
+  - type: web
+    runtime: static
+    name: analytix-frontend
+    buildCommand: cd frontend-codes && npm install && npm run build
+    staticPublishPath: ./frontend-codes/out

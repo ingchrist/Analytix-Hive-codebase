@@ -1,38 +1,3 @@
-import { z } from "zod";
-
-export const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1, "Password is required"),
-});
-
-export const signupSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-  first_name: z.string().min(1, "First name is required"),
-  last_name: z.string().min(1, "Last name is required"),
-});
-
-export type TLogin = z.infer<typeof loginSchema>;
-export type TSignup = z.infer<typeof signupSchema>;
-
-export interface TLoginResponse {
-  user: {
-    id: string;
-    email: string;
-  };
-  refresh: string;
-  access: string;
-}
-
-export interface TSignupResponse {
-  user: {
-    id:string;
-    email: string;
-  };
-  refresh: string;
-  access: string;
-}
-
 export interface User {
   id: string
   name: string
@@ -57,7 +22,6 @@ export interface Course {
   price: number
   category: string
   level: string
-
   language: string
 }
 

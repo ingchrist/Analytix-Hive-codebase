@@ -3,11 +3,13 @@
 import { ChevronDown, Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
 
   // Handles closing mobile menu when outside the menu is clicked
   useEffect(() => {
@@ -72,20 +74,20 @@ const Navbar = () => {
         <div className="flex items-center gap-4 md:w-[30%] justify-end">
           <ul className="flex justify-end items-center gap-4">
             <li>
-              <Link
-                href="/auth"
+              <button
+                onClick={() => router.push("/auth")}
                 className="bg-[#3086EE1A] text-darkBlue-500 text-sm lg:text-base font-semibold px-6 py-3 rounded-full hover:bg-[#3086EE2A] transition-colors"
               >
                 Login
-              </Link>
+              </button>
             </li>
             <li>
-              <Link
-                href="/auth"
+              <button
+                onClick={() => router.push("/auth")}
                 className="bg-yellow text-white text-sm lg:text-base font-semibold px-6 py-3 rounded-full hover:bg-yellow/80 transition-colors"
               >
                 Signup
-              </Link>
+              </button>
             </li>
           </ul>
 
@@ -148,3 +150,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

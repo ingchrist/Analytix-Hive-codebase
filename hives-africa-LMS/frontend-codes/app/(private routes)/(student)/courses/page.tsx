@@ -62,7 +62,7 @@ const mockCourses: Course[] = [
     duration: "40 hours",
     price: 89.99,
     originalPrice: 199.99,
-    thumbnail: "/ai.png",
+    thumbnail: "/ai.png?height=200&width=300",
     description: "Master React from basics to advanced concepts with hands-on projects",
     progress: 65,
     status: "enrolled",
@@ -79,7 +79,7 @@ const mockCourses: Course[] = [
     duration: "35 hours",
     price: 79.99,
     originalPrice: 149.99,
-    thumbnail: "/ai.png",
+    thumbnail: "/ai.png?height=200&width=300",
     description: "Learn Python programming for data analysis and machine learning",
     progress: 100,
     status: "completed",
@@ -95,7 +95,7 @@ const mockCourses: Course[] = [
     students: 8900,
     duration: "28 hours",
     price: 99.99,
-    thumbnail: "/ai.png",
+    thumbnail: "/ai.png?height=200&width=300",
     description: "Complete guide to user interface and user experience design",
     status: "wishlist",
     tags: ["UI/UX", "Design", "Figma"],
@@ -111,7 +111,7 @@ const mockCourses: Course[] = [
     duration: "45 hours",
     price: 94.99,
     originalPrice: 179.99,
-    thumbnail: "/ai.png",
+    thumbnail: "/ai.png?height=200&width=300",
     description: "Build scalable backend applications with Node.js and Express",
     progress: 30,
     status: "enrolled",
@@ -127,7 +127,7 @@ const mockCourses: Course[] = [
     students: 18700,
     duration: "25 hours",
     price: 69.99,
-    thumbnail: "/ai.png",
+    thumbnail: "/ai.png?height=200&width=300",
     description: "Learn effective digital marketing strategies and techniques",
     status: "not-started",
     tags: ["Marketing", "SEO", "Social Media"],
@@ -143,7 +143,7 @@ const mockCourses: Course[] = [
     duration: "50 hours",
     price: 129.99,
     originalPrice: 249.99,
-    thumbnail: "/ai.png",
+    thumbnail: "/ai.png?height=200&width=300",
     description: "Deep dive into machine learning using TensorFlow framework",
     progress: 100,
     status: "completed",
@@ -257,8 +257,6 @@ export default function ViewAll() {
           <Image
             src={course.thumbnail || "/ai.png"}
             alt={course.title}
-            width={100}
-            height={100}
             className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
           />
           <div className="absolute top-2 right-2">
@@ -369,8 +367,6 @@ export default function ViewAll() {
           <Image
             src={course.thumbnail || "/ai.png"}
             alt={course.title}
-            width={300}
-            height={200}
             className="w-24 h-16 object-cover rounded flex-shrink-0"
           />
           <div className="flex-1 min-w-0">

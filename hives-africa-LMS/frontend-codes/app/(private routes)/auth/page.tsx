@@ -1,29 +1,54 @@
-"use client";
-import AuthContainer from "@/components/auth/auth-container";
-import LoginForm from "@/components/auth/login-form";
-import SignupForm from "@/components/auth/signup-form";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+"use client"
+import { AuthContainer } from "@/components/auth/auth-container"
+import type { LoginFormData, SignupFormData } from "@/lib/validations"
+import { signinUser, signupUser } from "@/services/auth"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
-const AuthPage = () => {
+export default function AuthPage() {
+  const router = useRouter()
+
+  const handleLogin = async (data: LoginFormData) => {
+    try {
+      await signinUser(data)
+      toast.success("Login successful")
+      router.push("/dashboard")
+    } catch (error: any) {
+      toast.error(error.message)
+    }
+  }
+
+  const handleSignup = async (data: SignupFormData) => {
+    try {
+      await signupUser(data)
+      toast.success("Signup successful")
+      router.push("/dashboard")
+    } catch (error: any) {
+      toast.error(error.message)
+    }
+  }
+
+  const handleForgotPassword = () => {
+    console.log("Forgot password clicked")
+    // Implement forgot password logic
+    // Example: redirect to forgot password page
+  }
+
+  const handleGoogleSignIn = async () => {
+    console.log("Google sign in clicked")
+    // Implement Google OAuth logic
+    // Example: await signInWithGoogle()
+  }
+
   return (
-    <AuthContainer
-      title="Welcome back"
-      description="Login to your account to continue"
-    >
-      <Tabs defaultValue="login" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="login">Login</TabsTrigger>
-          <TabsTrigger value="signup">Sign up</TabsTrigger>
-        </TabsList>
-        <TabsContent value="login">
-          <LoginForm />
-        </TabsContent>
-        <TabsContent value="signup">
-          <SignupForm />
-        </TabsContent>
-      </Tabs>
-    </AuthContainer>
-  );
-};
-
-export default AuthPage;
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <AuthContainer
+        initialMode="login"
+        onLogin={handleLogin}
+        onSignup={handleSignup}
+        onForgotPassword={handleForgotPassword}
+        onGoogleSignIn={handleGoogleSignIn}
+      />
+    </div>
+  )
+}
