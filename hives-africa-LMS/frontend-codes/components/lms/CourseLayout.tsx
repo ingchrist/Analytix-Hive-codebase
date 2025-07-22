@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { CourseHeader } from '@/components/lms/CourseHeader';
 import { CourseSidebar } from '@/components/lms/CourseSidebar';
 import { ContentRenderer } from '@/components/lms/ContentRenderer';
@@ -38,7 +38,7 @@ export const CourseLayout: React.FC<CourseLayoutProps> = ({
   const allLectures = courseData.sections.flatMap(section => section.lectures);
   const currentIndex = allLectures.findIndex(lecture => lecture.id === activeLectureId);
 
-  const goToNextLecture = () => {
+  const goToNextLecture = useCallback(() => {
     if (currentIndex < allLectures.length - 1) {
       const nextLecture = allLectures[currentIndex + 1];
       onLectureSelect(nextLecture.id);
@@ -47,13 +47,13 @@ export const CourseLayout: React.FC<CourseLayoutProps> = ({
         onMarkComplete(activeLecture.id);
       }
     }
-  };
+  }, [currentIndex, allLectures, onLectureSelect, activeLecture, onMarkComplete]);
 
-  const goToPreviousLecture = () => {
+  const goToPreviousLecture = useCallback(() => {
     if (currentIndex > 0) {
       onLectureSelect(allLectures[currentIndex - 1].id);
     }
-  };
+  }, [currentIndex, allLectures, onLectureSelect]);
 
   const toggleSectionExpanded = (sectionId: number) => {
     setExpandedSections(prev => 
@@ -89,7 +89,7 @@ export const CourseLayout: React.FC<CourseLayoutProps> = ({
 
     document.addEventListener('keydown', handleKeyPress);
     return () => document.removeEventListener('keydown', handleKeyPress);
-  }, [currentIndex]);
+  }, [currentIndex, goToNextLecture, goToPreviousLecture]);
 
   return (
     <div className="min-h-screen bg-[#1c1d1f] text-white">
