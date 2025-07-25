@@ -34,6 +34,7 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
     'channels',
     'crispy_forms',
@@ -46,16 +47,15 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     'apps.core',
     'apps.users',
-]
-
-INSTALLED_APPS += [
+    'apps.chat',
     'apps.notifications',
-    'DJANGO_APPS',
-    'THIRD_PARTY_APPS',
-    'LOCAL_APPS',     
+    'apps.files',
+    'apps.analytics',
+    'apps.courses',
+    'apps.payments',
 ]
 
-]
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
  # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -78,9 +78,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.contrib.auth.backends.ModelBackend',
-    'django.contrib.auth.backends.ModelBackend',
+]
 
+# Authentication backends
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 ROOT_URLCONF = 'bmad_lms.urls'
@@ -96,7 +99,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-		'path('api/notifications/', include('apps.notifications.urls))',
             ],
         },
     },

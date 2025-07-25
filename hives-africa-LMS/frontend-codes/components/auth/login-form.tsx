@@ -42,13 +42,9 @@ export function LoginForm({
 
   const handleFormSubmit = async (data: LoginFormData) => {
     try {
-     console.log("Form data:", data)
-     signinMutation.mutate(data)
-      if (signinMutation.isSuccess) {
-        console.log("Login successful")
-        router.push("/student/dashboard")
-      }
-        // await onSubmit?.(data)
+      console.log("Form data:", data)
+      signinMutation.mutate(data)
+      // The redirect will be handled by the authentication context
     } catch (error) {
       console.error("Login error:", error)
     }
