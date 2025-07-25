@@ -148,7 +148,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const redirectPath = getRedirectPath(userData.user_type)
     router.push(redirectPath)
     
-    toast.success(`Welcome back, ${userData.first_name}!`)
+    // Show user type-specific welcome message
+    const userTypeDisplay = userData.user_type.charAt(0).toUpperCase() + userData.user_type.slice(1)
+    
+    if (userData.user_type === 'instructor' || userData.user_type === 'admin') {
+      toast.success(`Welcome back, ${userData.first_name}!`, {
+        description: `${userTypeDisplay} dashboard will be available soon. For now, you're redirected to the student dashboard.`,
+        duration: 6000,
+      })
+    } else {
+      toast.success(`Welcome back, ${userData.first_name}!`, {
+        description: `You're now logged in to your ${userTypeDisplay} dashboard.`,
+      })
+    }
   }
 
   const logout = () => {

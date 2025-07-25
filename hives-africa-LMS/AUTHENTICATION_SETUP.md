@@ -200,9 +200,17 @@ PATCH /api/users/me/update/     - Update user profile
 ## 🚀 User Types and Redirects
 
 After successful authentication, users are redirected based on their type:
-- **Student**: `/student/dashboard`
-- **Instructor**: `/instructor/dashboard`
-- **Admin**: `/admin/dashboard`
+- **Student**: `/student/dashboard` ✅ **Available**
+- **Instructor**: `/student/dashboard` ⚠️ **Temporary redirect** (Instructor dashboard coming soon)
+- **Admin**: `/student/dashboard` ⚠️ **Temporary redirect** (Admin dashboard coming soon)
+
+**Current Flow:**
+1. **Signup** → `/auth?message=verification-sent` (email verification required)
+2. **Login** → All users redirected to `/student/dashboard`
+3. **User Experience:** 
+   - Students: Full access to student dashboard
+   - Instructors/Admins: Can access student features temporarily with informational messages
+   - User type indicators show account type and development status
 
 ## 🔄 State Management
 

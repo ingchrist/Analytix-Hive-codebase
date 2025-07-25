@@ -10,6 +10,8 @@ import type { Course, User } from "@/types"
 
 import { toast } from "sonner"
 import { useDashboard } from "../studentContext"
+import { useAuth } from "@/contexts/AuthContext"
+import { UserTypeIndicator } from "@/components/shared/user-type-indicator"
 import Link from "next/link"
 import Image from "next/image"
 
@@ -18,6 +20,7 @@ import Image from "next/image"
 export default function DashboardOverview() {
 
 const {  user, enrolledCourses,  handleTabChange} = useDashboard()
+const { user: authUser } = useAuth()
   const totalProgress = user.progress.reduce((acc, p) => acc + p.progress, 0) / user.progress.length
   const completedCourses = user.progress.filter((p) => p.progress === 100).length
   const inProgressCourses = user.progress.filter((p) => p.progress > 0 && p.progress < 100).length
@@ -54,6 +57,9 @@ const {  user, enrolledCourses,  handleTabChange} = useDashboard()
         <h1 className="text-2xl sm:text-3xl font-bold mb-2">Welcome back, {user.name}!</h1>
         <p className="text-base sm:text-lg opacity-90">Continue your learning journey</p>
       </div>
+
+      {/* User Type Indicator for non-student users */}
+      {authUser && <UserTypeIndicator user={authUser} showMessage={true} />}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">

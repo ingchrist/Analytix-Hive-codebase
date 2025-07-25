@@ -2,6 +2,8 @@
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { useAuth } from "@/contexts/AuthContext"
+import { UserTypeIndicator } from "@/components/shared/user-type-indicator"
 import {
   LayoutDashboard,
   BookOpen,
@@ -76,11 +78,25 @@ const sidebarItems = [
 ]
 
 export default function Sidebar({ activeTab, onTabChange, className }: SidebarProps) {
-
+  const { user } = useAuth()
 
   return (
     <div className={cn("w-64 min-h-screen bg-white border-r border-gray-200 h-full overflow-y-auto", className)}>
       <div className="p-4">
+        {/* User Type Indicator */}
+        {user && (
+          <div className="mb-4 pb-4 border-b border-gray-200">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-gray-700">Account Type</span>
+              <UserTypeIndicator user={user} showMessage={false} />
+            </div>
+            {(user.user_type === 'instructor' || user.user_type === 'admin') && (
+              <p className="text-xs text-gray-500">
+                {user.user_type === 'instructor' ? 'Instructor' : 'Admin'} dashboard coming soon
+              </p>
+            )}
+          </div>
+        )}
         <nav className="space-y-2">
           {sidebarItems.map((item) => {
             const Icon = item.icon
