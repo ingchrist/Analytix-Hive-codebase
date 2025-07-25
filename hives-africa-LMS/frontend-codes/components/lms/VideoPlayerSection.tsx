@@ -1,15 +1,21 @@
-import React, { useState, useRef, useEffect, useCallback, JSX } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { VideoPlayer } from '@/components/lms/VideoPlayer';
 import { VideoControls } from '@/components/lms/VideoControls';
 import { CheckCircle } from 'lucide-react';
+import type { Lecture } from '@/types/course';
 import { NavigationArrows } from '@/app/(private routes)/course/chapter/_components/NavigationArrows';
 import { useCourse } from '@/app/(private routes)/(student)/courses/chapter/_components/CourseContext';
-import type { VideoPlayerSectionProps, Timer } from '@/types/video';
-import { debounce } from '@/lib/utils';
+interface VideoPlayerSectionProps {
+  lecture?: Lecture;
+  onNext: () => void;
+  onPrevious: () => void;
+  onMarkComplete: () => void;
+  isCompleted: boolean;
+  onVideoEnd: () => void;
+  onTimeUpdate?: (time: number) => void;
+}
 
-import '@/app/globals.css';
-
-export const VideoPlayerSection = ({
+export const VideoPlayerSection: React.FC<VideoPlayerSectionProps> = ({
   lecture,
   onNext,
   onPrevious,
@@ -17,10 +23,8 @@ export const VideoPlayerSection = ({
   isCompleted,
   onVideoEnd,
   onTimeUpdate
-}: VideoPlayerSectionProps) => {
+}) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const timeoutRef = useRef<Timer | null>(null); // Fix: Provide initial value
-  const isMountedRef = useRef(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -29,11 +33,10 @@ export const VideoPlayerSection = ({
   const [playbackRate, setPlaybackRate] = useState(1);
   const [showControls, setShowControls] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [videoQuality, setVideoQuality] = useState('Auto');
   const [captionsEnabled, setCaptionsEnabled] = useState(false);
   const [availableQualities] = useState(['Auto', '1080p', '720p', '480p', '360p']);
-
+  
   const {
     goToNextLecture,
     goToPreviousLecture,
@@ -43,153 +46,26 @@ export const VideoPlayerSection = ({
   
   const defaultVideoUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
 
-  const debouncedVolumeChange = useCallback(
-    (newVolume: number) => {
-      const video = videoRef.current;
-      if (!video) return;
-      video.volume = newVolume;
-      setVolume(newVolume);
-      setIsMuted(newVolume === 0);
-      localStorage.setItem('video-volume', newVolume.toString());
-    },
-    [] // Fix: Use empty dependency array instead of debounce wrapper
-  );
-
-  const handleSeek = useCallback(
-    (time: number) => {
-      const video = videoRef.current;
-      if (!video) return;
-      video.currentTime = time;
-      setCurrentTime(time);
-    },
-    [] // Fix: Use empty dependency array instead of debounce wrapper
-  );
-
-  const togglePlay = useCallback(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    if (isPlaying) {
-      video.pause();
-    } else {
-      video.play();
-    }
-  }, [isPlaying]);
-
-  const skipForward = useCallback(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.currentTime = Math.min(video.currentTime + 10, duration);
-  }, [duration]);
-
-  const skipBackward = useCallback(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.currentTime = Math.max(video.currentTime - 10, 0);
-  }, []);
-
-  const handleVolumeChange = useCallback((newVolume: number) => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.volume = newVolume;
-    setVolume(newVolume);
-    setIsMuted(newVolume === 0);
-    localStorage.setItem('video-volume', newVolume.toString());
-  }, []);
-
-  const toggleMute = useCallback(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    const newMuted = !isMuted;
-    video.muted = newMuted;
-    setIsMuted(newMuted);
-  }, [isMuted]);
-
-  const changePlaybackRate = useCallback((rate: number) => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.playbackRate = rate;
-    setPlaybackRate(rate);
-  }, []);
-
-  const handleQualityChange = useCallback((quality: string) => {
-    setVideoQuality(quality);
-    console.log(`Quality changed to: ${quality}`);
-  }, []);
-
-  const toggleCaptions = useCallback(() => {
-    setCaptionsEnabled(!captionsEnabled);
-    console.log(`Captions ${!captionsEnabled ? 'enabled' : 'disabled'}`);
-  }, [captionsEnabled]);
-
-  const toggleFullscreen = useCallback(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-    } else {
-      video.requestFullscreen();
-    }
-  }, []);
-
   useEffect(() => {
-    if (!isMountedRef.current) return;
-    
     const video = videoRef.current;
     if (!video) return;
-
-    const storedVolume = localStorage.getItem('video-volume');
-    if (storedVolume) {
-      const newVolume = parseFloat(storedVolume);
-      if (!isNaN(newVolume) && newVolume >= 0 && newVolume <= 1) {
-        setVolume(newVolume);
-        video.volume = newVolume;
-      }
-    }
 
     const updateTime = () => {
-      if (!isMountedRef.current) return;
       const time = video.currentTime;
       setCurrentTime(time);
       onTimeUpdate?.(time);
     };
-    
-    const updateDuration = () => {
-      if (!isMountedRef.current) return;
-      const videoDuration = video.duration;
-      if (!isNaN(videoDuration) && isFinite(videoDuration)) {
-        setDuration(videoDuration);
-      }
-    };
-    
-    const handlePlay = () => isMountedRef.current && setIsPlaying(true);
-    const handlePause = () => isMountedRef.current && setIsPlaying(false);
-    const handleLoadStart = () => {
-      if (!isMountedRef.current) return;
-      setIsLoading(true);
-      setError(null);
-    };
-    const handleCanPlay = () => isMountedRef.current && setIsLoading(false);
+    const updateDuration = () => setDuration(video.duration);
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+    const handleLoadStart = () => setIsLoading(true);
+    const handleCanPlay = () => setIsLoading(false);
     const handleEnded = () => {
-      if (!isMountedRef.current) return;
       setIsPlaying(false);
       onVideoEnd();
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      timeoutRef.current = setTimeout(() => {
-        if (isMountedRef.current) {
-          onNext();
-        }
+      setTimeout(() => {
+        onNext();
       }, 2000);
-    };
-    const handleError = (e: Event) => {
-      if (!isMountedRef.current) return;
-      console.error('Video error:', e);
-      const videoElement = e.target as HTMLVideoElement;
-      const errorMessage = videoElement.error?.message || 'Failed to load video. Please try again later.';
-      setError(errorMessage);
-      setIsLoading(false);
     };
 
     video.addEventListener('timeupdate', updateTime);
@@ -199,10 +75,8 @@ export const VideoPlayerSection = ({
     video.addEventListener('loadstart', handleLoadStart);
     video.addEventListener('canplay', handleCanPlay);
     video.addEventListener('ended', handleEnded);
-    video.addEventListener('error', handleError);
 
     return () => {
-      isMountedRef.current = false;
       video.removeEventListener('timeupdate', updateTime);
       video.removeEventListener('loadedmetadata', updateDuration);
       video.removeEventListener('play', handlePlay);
@@ -210,18 +84,10 @@ export const VideoPlayerSection = ({
       video.removeEventListener('loadstart', handleLoadStart);
       video.removeEventListener('canplay', handleCanPlay);
       video.removeEventListener('ended', handleEnded);
-      video.removeEventListener('error', handleError);
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      
-      // Reset video state on cleanup
-      video.pause();
-      video.currentTime = 0;
-      video.src = '';
     };
   }, [onNext, onVideoEnd, onTimeUpdate]);
 
+  // Reset video when lecture changes
   useEffect(() => {
     if (videoRef.current) {
       setCurrentTime(0);
@@ -233,8 +99,7 @@ export const VideoPlayerSection = ({
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.target && (e.target as HTMLElement).tagName === 'INPUT') return;
-      if (e.repeat) return;
-
+      
       switch (e.code) {
         case 'Space':
           e.preventDefault();
@@ -273,7 +138,87 @@ export const VideoPlayerSection = ({
 
     document.addEventListener('keydown', handleKeyPress);
     return () => document.removeEventListener('keydown', handleKeyPress);
-  }, [volume, skipForward, skipBackward, toggleFullscreen, handleVolumeChange, toggleMute, togglePlay]);
+  }, [volume]);
+
+  const togglePlay = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isPlaying) {
+      video.pause();
+    } else {
+      video.play();
+    }
+  };
+
+  const handleSeek = (time: number) => {
+    const video = videoRef.current;
+    if (!video) return;
+    
+    video.currentTime = time;
+    setCurrentTime(time);
+  };
+
+  const skipForward = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    
+    video.currentTime = Math.min(video.currentTime + 10, duration);
+  };
+
+  const skipBackward = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    
+    video.currentTime = Math.max(video.currentTime - 10, 0);
+  };
+
+  const handleVolumeChange = (newVolume: number) => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.volume = newVolume;
+    setVolume(newVolume);
+    setIsMuted(newVolume === 0);
+  };
+
+  const toggleMute = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const newMuted = !isMuted;
+    video.muted = newMuted;
+    setIsMuted(newMuted);
+  };
+
+  const changePlaybackRate = (rate: number) => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.playbackRate = rate;
+    setPlaybackRate(rate);
+  };
+
+  const handleQualityChange = (quality: string) => {
+    setVideoQuality(quality);
+    console.log(`Quality changed to: ${quality}`);
+  };
+
+  const toggleCaptions = () => {
+    setCaptionsEnabled(!captionsEnabled);
+    console.log(`Captions ${!captionsEnabled ? 'enabled' : 'disabled'}`);
+  };
+
+  const toggleFullscreen = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      video.requestFullscreen();
+    }
+  };
 
   if (!lecture) {
     return (
@@ -288,26 +233,25 @@ export const VideoPlayerSection = ({
 
   return (
     <div className="h-full flex flex-col bg-black">
+      {/* Video Player Area - Fixed aspect ratio */}
       <div className="relative flex-1 min-h-0 group">
         {isLoading && (
           <div className="absolute inset-0 bg-black flex items-center justify-center z-10">
             <div className="text-white">Loading video...</div>
           </div>
         )}
-        {error && (
-          <div className="absolute inset-0 bg-black flex items-center justify-center z-10">
-            <div className="text-red-500">{error}</div>
-          </div>
-        )}
         
+        {/* Video Player with Navigation Arrows */}
         <div className="relative h-full w-full">
           <VideoPlayer
             ref={videoRef}
             src={lecture.videoUrl || defaultVideoUrl}
             onMouseEnter={() => setShowControls(true)}
             onMouseLeave={() => setShowControls(false)}
+            
           />
 
+          {/* Navigation Arrows Overlay */}
           <NavigationArrows
             canGoPrevious={currentIndex > 0}
             canGoNext={currentIndex < allLectures.length - 1}
@@ -318,6 +262,7 @@ export const VideoPlayerSection = ({
           />
         </div>
 
+        {/* Video Controls */}
         <VideoControls
           isPlaying={isPlaying}
           currentTime={currentTime}
@@ -342,6 +287,7 @@ export const VideoPlayerSection = ({
         />
       </div>
 
+      {/* Lecture Info Section - Scrollable */}
       <div className="flex-shrink-0 bg-[#2d2f31] border-t border-[#3e4143] max-h-[40vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex items-start justify-between mb-4">
@@ -370,6 +316,7 @@ export const VideoPlayerSection = ({
             </div>
           </div>
 
+          {/* Attachments Section */}
           {lecture.attachments && lecture.attachments.length > 0 && (
             <div className="p-4 bg-[#3e4143] rounded-lg">
               <h3 className="text-white font-medium mb-3">Course Materials</h3>
