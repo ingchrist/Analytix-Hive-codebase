@@ -195,39 +195,33 @@ const { user: authUser } = useAuth()
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <Link href={"/achievements"}> 
-  
-            <div
-              className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
-              
-            >
-              <div className="bg-[#fdb606] p-2 rounded-full">
-                <Award className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+            <Link href={"/achievements"}>
+              <div className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+                <div className="bg-[#fdb606] p-2 rounded-full">
+                  <Award className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-sm sm:text-base">First Course Completed</h4>
+                  <p className="text-xs sm:text-sm text-gray-600">
+                    Completed your first course - UI/UX Design Masterclass
+                  </p>
+                </div>
+                <Badge variant="secondary" className="text-xs">
+                  New
+                </Badge>
               </div>
-              <div className="flex-1">
-                <h4 className="font-semibold text-sm sm:text-base">First Course Completed</h4>
-                <p className="text-xs sm:text-sm text-gray-600">
-                  Completed your first course - UI/UX Design Masterclass
-                </p>
+            </Link>
+            <Link href={"/achievements"}>
+              <div className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+                <div className="bg-green-500 p-2 rounded-full">
+                  <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-sm sm:text-base">7-Day Learning Streak</h4>
+                  <p className="text-xs sm:text-sm text-gray-600">Learned for 7 consecutive days</p>
+                </div>
               </div>
-              <Badge variant="secondary" className="text-xs">
-                New
-              </Badge>
-            </div>
-            <div
-              className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
-            >
-                <Link href={"/achievements"}>
-              <div className="bg-green-500 p-2 rounded-full">
-                <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-              </div>
-              <div className="flex-1">
-                <h4 className="font-semibold text-sm sm:text-base">7-Day Learning Streak</h4>
-                <p className="text-xs sm:text-sm text-gray-600">Learned for 7 consecutive days</p>
-              </div>
-              </Link>
-            </div>
-                      </Link>
+            </Link>
           </div>
 
           {/* Mobile View All Button */}
