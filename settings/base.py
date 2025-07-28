@@ -8,7 +8,7 @@ env = environ.Env(
 )
 
 # Build paths inside the project
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Read environment file
 environ.Env.read_env(BASE_DIR / '.env')
@@ -53,10 +53,12 @@ LOCAL_APPS = [
     'apps.analytics',
     'apps.courses',
     'apps.payments',
+    'apps.search',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
- # Email settings
+
+# Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -86,7 +88,7 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-ROOT_URLCONF = 'bmad_lms.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATES = [
     {
@@ -105,13 +107,8 @@ TEMPLATES = [
 ]
 
 # WSGI/ASGI configuration
-WEBPACK_LOADER = {
-    'DEFAULT': {
-        'BUNDLE_DIR_NAME': 'bundles/',
-        'STATS_FILE': os.path.join(BASE_DIR, 'frontend', 'webpack-stats.json'),
-    }
-}
-
+WSGI_APPLICATION = 'wsgi.application'
+ASGI_APPLICATION = 'asgi.application'
 
 # Database
 DATABASES = {
@@ -146,13 +143,11 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Media files
-# Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # Default file storage
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -181,6 +176,8 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -213,7 +210,6 @@ CHANNEL_LAYERS = {
         },
     },
 }
-
 
 # Celery Configuration
 CELERY_BROKER_URL = env('REDIS_URL')
@@ -268,4 +264,3 @@ LOGGING = {
         },
     },
 }
-
