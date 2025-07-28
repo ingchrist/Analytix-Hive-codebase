@@ -1,2 +1,2 @@
-# Courses app signals
+# Chat app signals
 # Add your signals here when needed
