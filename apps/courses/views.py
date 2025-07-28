@@ -1,20 +1,35 @@
-from django.urls import path
-from . import views
+from rest_framework import generics, status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.contrib.auth import get_user_model
 
-app_name = 'courses'
+User = get_user_model()
 
-urlpatterns = [
-    # Categories
-    path('categories/', views.CategoryListView.as_view(), name='category-list'),
-    
-    # Courses
-    path('', views.CourseListView.as_view(), name='course-list'),
-    path('<slug:slug>/', views.CourseDetailView.as_view(), name='course-detail'),
-    path('<slug:slug>/enroll/', views.EnrollCourseView.as_view(), name='course-enroll'),
-    path('<slug:slug>/reviews/', views.CourseReviewsView.as_view(), name='course-reviews'),
-    path('<slug:slug>/progress/', views.course_progress, name='course-progress'),
-    
-    # My Courses
-    path('my/enrollments/', views.MyEnrollmentsView.as_view(), name='my-enrollments'),
-]
+# Placeholder views - to be implemented
+class CategoryListView(generics.ListAPIView):
+    def get(self, request):
+        return Response({"message": "Category list - not implemented yet"})
 
+class CourseListView(generics.ListAPIView):
+    def get(self, request):
+        return Response({"message": "Course list - not implemented yet"})
+
+class CourseDetailView(generics.RetrieveAPIView):
+    def get(self, request, slug):
+        return Response({"message": f"Course detail for {slug} - not implemented yet"})
+
+class EnrollCourseView(generics.CreateAPIView):
+    def post(self, request, slug):
+        return Response({"message": f"Enroll in course {slug} - not implemented yet"})
+
+class CourseReviewsView(generics.ListCreateAPIView):
+    def get(self, request, slug):
+        return Response({"message": f"Reviews for course {slug} - not implemented yet"})
+
+class MyEnrollmentsView(generics.ListAPIView):
+    def get(self, request):
+        return Response({"message": "My enrollments - not implemented yet"})
+
+@api_view(['GET'])
+def course_progress(request, slug):
+    return Response({"message": f"Progress for course {slug} - not implemented yet"})
