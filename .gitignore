@@ -1,103 +1,51 @@
-# Python
-*.py[cod]
-__pycache__/
-*.so
-*.egg
-*.egg-info/
-dist/
-build/
-eggs/
-parts/
-bin/
-var/
-sdist/
-develop-eggs/
-.installed.cfg
-/lib/
-/lib64/
-venv/
-env/
-.env
+# Dependencies
+/node_modules
 
-# Django
-*.log
-*.pot
-*.pyc
-db.sqlite3
-media/
-static/
-local_settings.py
+# Next.js build and cache artifacts
+/.next/
+/out/
+/.swc/
 
-# VS Code
-.vscode/
-*.code-workspace
+# TypeScript cache file
+*.tsbuildinfo
 
-# IDE
-.idea/
-*.swp
-*.swo
-.project
-.pydevproject
-.settings/
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Environment variables
-.env
-.env.local
-.env.*.local
-
-# Django REST framework
-api-docs/
-
-# Frontend - Next.js, Node.js, Vercel
-/frontend-codes/node_modules
-/frontend-codes/.next/
-/frontend-codes/out/
-/frontend-codes/build/
-/frontend-codes/.pnp
-/frontend-codes/.pnp.*
-/frontend-codes/.yarn/*
-!/frontend-codes/.yarn/patches
-!/frontend-codes/.yarn/plugins
-!/frontend-codes/.yarn/releases
-!/frontend-codes/.yarn/versions
-/frontend-codes/.vercel
-/frontend-codes/*.tsbuildinfo
-/frontend-codes/next-env.d.ts
-
-# Log files
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# Misc
-*.pem
-
-# Coverage reports
-coverage/
-.coverage
-.coverage.*
-/htmlcov/
-nosetests.xml
-coverage.xml
-*,cover
-*.lcov
-
-# Build artifacts
+# Build output
 /build
-/dist
-/.angular/
 
-# Other
-.env.development
-.env.test
-.env.production
+# Local Environment Variables
+# Exclude all .env files except for the example template
+.env*
+!.env.example
+
+# Production/Deployment
+.vercel
+/public/build
+
+# Logs
+npm-debug.log*
+yarn-error.log
+yarn-debug.log
+pnpm-debug.log*
+*.log
+
+# Turborepo cache
+.turbo
+
+# macOS specific
+.DS_Store
+
+# Editor directories and files
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Packed NPM package (from your ls output)
+hive-africa@0.1.0
