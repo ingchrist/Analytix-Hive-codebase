@@ -35,6 +35,10 @@ export const signupSchema = z.object({
     .regex(/[a-zA-Z]/, "Password must contain at least one letter")
     .regex(/[0-9]/, "Password must contain at least one number")
     .regex(/[^a-zA-Z0-9]/, "Password must contain at least one special character"),
+  user_type: z
+    .string()
+    .optional()
+    .default("student"),
 })
 
 // Forgot password schema

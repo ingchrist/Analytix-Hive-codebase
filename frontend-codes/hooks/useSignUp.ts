@@ -1,52 +1,48 @@
 "use client"
 
 import { useMutation } from '@tanstack/react-query'
-import { SignupFormData } from '@/lib/validations'
 import { signupUser } from '@/services/auth'
-import { handleApiError, isApiError } from '@/lib/api-client'
+import { SignupFormData } from '@/lib/validations'
 import { toast } from 'sonner'
-import { useRouter } from 'next/navigation'
 
-// Custom hook for signup mutation
 export const useSignupMutation = () => {
-  const router = useRouter()
-
   return useMutation({
     mutationFn: signupUser,
-    
     onSuccess: (data) => {
-      console.log('Signup successful:', data)
-
-      toast.success('Account Created!', {
-        description: 'Please check your email to verify your account.',
-        duration: 6000,
-      })
-      
-      // Redirect to a verification pending page or login
-      router.push('/auth?message=verification-sent')
-    },
-    
-    onError: (error) => {
-      console.error('Signup failed:', error)
-      
-      if (isApiError(error)) {
-        // Handle field-specific validation errors
-        if (error.field_errors) {
-          Object.entries(error.field_errors).forEach(([field, messages]) => {
-            toast.error(`${field}: ${messages.join(', ')}`)
-          })
-        } else {
-          toast.error('Signup Failed', {
-            description: error.message,
-            duration: 5000,
-          })
-        }
-      } else {
-        toast.error('Signup Failed', {
-          description: 'Something went wrong. Please try again.',
-          duration: 5000,
-        })
+      // Store tokens if registration includes them
+      if (data.access && data.refresh) {
+        localStorage.setItem('access_token', data.access)
+        localStorage.setItem('refresh_token', data.refresh)
       }
+
+      toast.success(`Welcome ${data.user.first_name}! Your account has been created successfully.`)
+      console.log('Signup successful:', data)
+    },
+    onError: (error: any) => {
+      console.error('Signup failed:', error)
+
+      // Handle different error response structures
+      let errorMessage = 'Registration failed. Please try again.'
+
+      if (error.response?.data) {
+        const errorData = error.response.data
+
+        // Handle field-specific errors
+        if (typeof errorData === 'object') {
+          const firstError = Object.values(errorData)[0]
+          if (Array.isArray(firstError)) {
+            errorMessage = firstError[0]
+          } else if (typeof firstError === 'string') {
+            errorMessage = firstError
+          }
+        } else if (typeof errorData === 'string') {
+          errorMessage = errorData
+        }
+      } else if (error.message) {
+        errorMessage = error.message
+      }
+
+      toast.error(errorMessage)
     },
   })
 }

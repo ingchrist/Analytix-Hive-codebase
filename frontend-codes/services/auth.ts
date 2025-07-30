@@ -4,12 +4,23 @@ import { User } from '@/contexts/AuthContext'
 
 // Authentication response types
 interface AuthResponse {
-  key: string // Django Allauth returns 'key' as the token
+  access: string
+  refresh: string
   user: User
 }
 
 interface SignupResponse {
-  detail: string
+  user: {
+    id: number
+    email: string
+    first_name: string
+    last_name: string
+    user_type: string
+    is_verified: boolean
+    profile_picture?: string
+  }
+  access: string
+  refresh: string
 }
 
 interface UserResponse {
@@ -19,12 +30,14 @@ interface UserResponse {
 // Sign up user
 export const signupUser = async (data: SignupFormData): Promise<SignupResponse> => {
   try {
-    const response = await apiClient.post<SignupResponse>('/api/auth/registration/', {
+    const response = await apiClient.post<SignupResponse>('/api/auth/register/', {
       first_name: data.first_name,
       last_name: data.last_name,
       email: data.email,
-      password1: data.password,
-      password2: data.password, // Django Allauth expects password confirmation
+      password: data.password,
+      password_confirm: data.password,
+      user_type: 'student', // Default to student type
+      phone_number: '', // Optional field
     })
     return response
   } catch (error) {

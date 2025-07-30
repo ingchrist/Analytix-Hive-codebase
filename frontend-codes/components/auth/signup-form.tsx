@@ -37,11 +37,20 @@ const router = useRouter()
 
   const handleFormSubmit = async (data: SignupFormData) => {
     try {
-      // await onSubmit?.(data)
-      signupMutation.mutate(data)
-      if (isSuccess) {
-        router.push("/")
+      // Add default user_type if not provided
+      const signupData = {
+        ...data,
+        user_type: data.user_type || 'student'
       }
+      
+      signupMutation.mutate(signupData, {
+        onSuccess: () => {
+          // Redirect to dashboard on successful registration
+          setTimeout(() => {
+            router.push("/auth")
+          }, 1500)
+        }
+      })
     } catch (error) {
       console.error("Signup error:", error)
     }
