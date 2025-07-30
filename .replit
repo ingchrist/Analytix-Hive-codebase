@@ -5,7 +5,7 @@ channel = "stable-25_05"
 packages = ["nano"]
 
 [workflows]
-runButton = "Start Frontend"
+runButton = "Start Full Stack"
 
 [[workflows.workflow]]
 name = "Start Backend Mock"
@@ -41,6 +41,10 @@ args = "cd frontend-codes && npm run dev"
 [[ports]]
 localPort = 3000
 externalPort = 3000
+
+[[ports]]
+localPort = 3001
+externalPort = 3001
 
 [[ports]]
 localPort = 8000
