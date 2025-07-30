@@ -2,9 +2,10 @@ modules = ["nodejs-20", "python-3.12", "web"]
 
 [nix]
 channel = "stable-25_05"
+packages = ["nano"]
 
 [workflows]
-runButton = "Start Full Stack"
+runButton = "Start Frontend"
 
 [[workflows.workflow]]
 name = "Start Backend Mock"
@@ -36,3 +37,11 @@ args = "cd backend-codes-gd && npm run dev"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd frontend-codes && npm run dev"
+
+[[ports]]
+localPort = 3000
+externalPort = 3000
+
+[[ports]]
+localPort = 8000
+externalPort = 80
