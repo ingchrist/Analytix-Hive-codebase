@@ -17,8 +17,8 @@ export const useSigninMutation = () => {
     onSuccess: (data) => {
       console.log('Login successful:', data)
       
-      // Use the auth context login method
-      login(data.key, data.user)
+      // Use the auth context login method with correct response format
+      login(data.access, data.user)
       
       toast.success('Welcome back!', {
         description: `Successfully logged in as ${data.user.first_name}`,

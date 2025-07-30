@@ -20,8 +20,8 @@ class ApiClient {
   private baseURL: string
 
   constructor() {
-    this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-    
+    this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://0.0.0.0:8000'
+
     this.client = axios.create({
       baseURL: this.baseURL,
       timeout: 30000,
@@ -55,7 +55,7 @@ class ApiClient {
       },
       (error) => {
         const formattedError = this.handleError(error)
-        
+
         // Handle 401 errors (unauthorized)
         if (error.response?.status === 401) {
           tokenStorage.clearTokens()
@@ -73,7 +73,7 @@ class ApiClient {
     if (error.response) {
       // Server responded with error status
       const { status, data } = error.response
-      
+
       let message = 'An error occurred'
       let field_errors: Record<string, string[]> | undefined
 
@@ -101,7 +101,7 @@ class ApiClient {
             field_errors![key] = [data[key]]
           }
         })
-        
+
         // If we have field errors but no general message, create one
         if (Object.keys(field_errors).length > 0 && message === 'An error occurred') {
           message = 'Please check the form for errors'
@@ -196,10 +196,10 @@ export const handleApiError = (error: ApiError, showToast = true) => {
   if (showToast) {
     toast.error(error.message)
   }
-  
+
   // Log error for debugging
   console.error('API Error:', error)
-  
+
   return error
 }
 

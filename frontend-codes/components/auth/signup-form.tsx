@@ -9,6 +9,7 @@ import { signupSchema, type SignupFormData } from "@/lib/validations"
 import { cn } from "@/lib/utils"
 import { useSignupMutation } from "@/hooks/useSignUp"
 import { useRouter } from "next/navigation"
+
 interface SignupFormProps {
   onSubmit?: (data: SignupFormData) => Promise<void> | void
   onLoginClick?: () => void
@@ -18,9 +19,8 @@ interface SignupFormProps {
 }
 
 export function SignupForm({ onSubmit, onLoginClick, onGoogleSignIn, isLoading = false, className }: SignupFormProps) {
-const signupMutation = useSignupMutation()
-const router = useRouter()
- const {isSuccess}=signupMutation
+  const signupMutation = useSignupMutation()
+  const router = useRouter()
   const {
     register,
     handleSubmit,
