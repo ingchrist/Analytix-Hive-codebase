@@ -71,7 +71,7 @@ export const signoutUser = async (): Promise<void> => {
 // Get current user
 export const getCurrentUser = async (): Promise<User> => {
   try {
-    const response = await apiClient.get<User>('/api/users/me/')
+    const response = await apiClient.get<User>('/api/users/profile/')
     return response
   } catch (error) {
     throw error

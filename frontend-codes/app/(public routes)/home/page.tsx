@@ -124,7 +124,10 @@ const Home = () => {
             tech skills through culturally relevant content tailored for your
             journey.
           </p>
-          <button className="bg-orange text-white text-xs md:text-sm font-medium px-6 py-3">
+          <button 
+            onClick={() => window.location.href = '/auth?mode=signup'}
+            className="bg-orange text-white text-xs md:text-sm font-medium px-6 py-3 cursor-pointer hover:bg-orange/90 transition"
+          >
             Get Started for Free
           </button>
         </div>

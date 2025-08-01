@@ -10,14 +10,14 @@ import type { Course, User } from "@/types"
 
 import { toast } from "sonner"
 import { useDashboard } from "../studentContext"
-import { useAuth } from "@/contexts/AuthContext"
+import { useAuth, withAuth } from "@/contexts/AuthContext"
 import { UserTypeIndicator } from "@/components/shared/user-type-indicator"
 import Link from "next/link"
 import Image from "next/image"
 
 
 
-export default function DashboardOverview() {
+function DashboardOverview() {
 
 const {  user, enrolledCourses,  handleTabChange} = useDashboard()
 const { user: authUser } = useAuth()
@@ -237,3 +237,5 @@ const { user: authUser } = useAuth()
     </div>
   )
 }
+
+export default withAuth(DashboardOverview);

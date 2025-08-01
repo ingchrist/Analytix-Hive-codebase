@@ -20,7 +20,7 @@ class ApiClient {
   private baseURL: string
 
   constructor() {
-    this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://0.0.0.0:8000'
+    this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
     this.client = axios.create({
       baseURL: this.baseURL,
@@ -39,7 +39,7 @@ class ApiClient {
       (config) => {
         const token = tokenStorage.getToken()
         if (token) {
-          config.headers.Authorization = `Token ${token}`
+          config.headers.Authorization = `Bearer ${token}`
         }
         return config
       },

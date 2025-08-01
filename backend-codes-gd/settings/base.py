@@ -8,7 +8,7 @@ env = environ.Env(
 )
 
 # Build paths inside the project
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Read environment file
 environ.Env.read_env(BASE_DIR / '.env')
@@ -50,14 +50,15 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     'apps.core',
     'apps.users',
-    'apps.chat',
-    'apps.notifications',
-    'apps.files',
-    'apps.analytics',
-    'apps.courses',
-    'apps.payments',
-    'apps.search',
-    'apps.live_classes',
+    # Temporarily disabled until views are properly implemented
+    # 'apps.chat',
+    # 'apps.notifications',
+    # 'apps.files',
+    # 'apps.analytics',
+    # 'apps.courses',
+    # 'apps.payments',
+    # 'apps.search',
+    # 'apps.live_classes',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -81,6 +82,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -91,7 +93,7 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-ROOT_URLCONF = 'bmad_lms.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATES = [
     {
@@ -118,9 +120,12 @@ WEBPACK_LOADER = {
 }
 
 
-# Database
+# Database - Default SQLite configuration
 DATABASES = {
-    'default': env.db()
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 # Password validation
@@ -191,6 +196,8 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3001",
 ]
 
 CORS_ALLOW_CREDENTIALS = True

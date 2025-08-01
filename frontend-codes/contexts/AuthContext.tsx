@@ -79,18 +79,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const storedUser = userStorage.getUser()
 
       if (storedToken && storedUser) {
-        setToken(storedToken)
-        setUser(storedUser)
-        
-        // Verify token validity
+        // Verify token validity BEFORE setting user as authenticated
         const isValid = await verifyToken(storedToken)
-        if (!isValid) {
-          logout()
+        if (isValid) {
+          setToken(storedToken)
+          setUser(storedUser)
+        } else {
+          // Clear invalid tokens/user data
+          tokenStorage.clearTokens()
+          userStorage.removeUser()
         }
       }
     } catch (error) {
       console.error('Error initializing auth:', error)
-      logout()
+      // Clear any potentially invalid data
+      tokenStorage.clearTokens()
+      userStorage.removeUser()
     } finally {
       setIsLoading(false)
     }
@@ -115,9 +119,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const verifyToken = async (token: string): Promise<boolean> => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me/`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/users/profile/`, {
         headers: {
-          'Authorization': `Token ${token}`,
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       })

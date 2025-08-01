@@ -2,17 +2,8 @@
 
 ## Current Status
 
-This Django backend is currently running in **development mock mode** using a Node.js server that simulates the API endpoints. This is because the development environment doesn't have Python package management (pip) available.
-
-## Quick Start (Mock Server)
-
-The mock server is currently running and provides sample API responses for testing:
-
-```bash
-npm install
-npm run dev
-```
-
+This Django backend is currently running 
+The server is currently running and provides sample API responses for testing:
 ### Available Mock Endpoints
 
 - `GET /` - Server status and endpoint list

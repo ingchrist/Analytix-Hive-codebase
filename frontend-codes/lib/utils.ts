@@ -68,6 +68,17 @@ export const tokenStorage = {
   }
 }
 
+// Utility to completely clear authentication data
+export const clearAuthData = () => {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('auth_token')
+    localStorage.removeItem('refresh_token')
+    localStorage.removeItem('user')
+    localStorage.removeItem('access_token') // Legacy token name
+    console.log('Authentication data cleared')
+  }
+}
+
 // User utilities
 export const userStorage = {
   getUser: () => storage.get('user'),
@@ -113,12 +124,27 @@ export const isProtectedRoute = (pathname: string): boolean => {
     '/student',
     '/course',
     '/lecture',
+    '/learning',
+    '/achievements',
     '/profile',
     '/settings',
     '/purchases',
     '/cart',
     '/wishlist'
   ]
+  
+  const publicRoutes = [
+    '/auth',
+    '/home',
+    '/',
+    '/about',
+    '/contact'
+  ]
+  
+  // If it's explicitly a public route, it's not protected
+  if (publicRoutes.some(route => pathname === route || pathname.startsWith(route + '/'))) {
+    return false
+  }
   
   return protectedRoutes.some(route => pathname.startsWith(route))
 }
@@ -129,12 +155,12 @@ export const getRedirectPath = (userType?: string): string => {
   switch (userType) {
     case 'instructor':
       // TODO: return '/instructor/dashboard' when instructor dashboard is ready
-      return '/student/dashboard' // Temporary redirect to prevent 404
+      return '/dashboard' // Temporary redirect to student dashboard
     case 'admin':
       // TODO: return '/admin/dashboard' when admin dashboard is ready
-      return '/student/dashboard' // Temporary redirect to prevent 404
+      return '/dashboard' // Temporary redirect to student dashboard
     case 'student':
     default:
-      return '/student/dashboard'
+      return '/dashboard'
   }
 }

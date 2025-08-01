@@ -8,15 +8,20 @@ import type { LoginFormData, SignupFormData } from "@/lib/validations"
 type AuthMode = "login" | "signup"
 
 interface AuthContainerProps {
-  initialMode?: AuthMode
+  currentMode?: AuthMode
+  onModeSwitch?: (mode: AuthMode) => void
   onLogin?: (data: LoginFormData) => Promise<void> | void
   onSignup?: (data: SignupFormData) => Promise<void> | void
   onForgotPassword?: () => void
   onGoogleSignIn?: () => Promise<void> | void
   isLoading?: boolean
+  // Keep backward compatibility
+  initialMode?: AuthMode
 }
 
 export function AuthContainer({
+  currentMode,
+  onModeSwitch,
   initialMode = "login",
   onLogin,
   onSignup,
@@ -24,10 +29,18 @@ export function AuthContainer({
   onGoogleSignIn,
   isLoading = false,
 }: AuthContainerProps) {
-  const [mode, setMode] = React.useState<AuthMode>(initialMode)
+  // Use external mode control if provided, otherwise use internal state
+  const [internalMode, setInternalMode] = React.useState<AuthMode>(initialMode)
+  const mode = currentMode || internalMode
 
   const handleModeSwitch = (newMode: AuthMode) => {
-    setMode(newMode)
+    if (onModeSwitch) {
+      // Use external mode switching (URL-based)
+      onModeSwitch(newMode)
+    } else {
+      // Use internal mode switching (component state)
+      setInternalMode(newMode)
+    }
   }
 
   if (mode === "signup") {

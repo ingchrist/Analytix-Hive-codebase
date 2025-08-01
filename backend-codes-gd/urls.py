@@ -13,15 +13,6 @@ urlpatterns = [
     path('api/core/', include('apps.core.urls')),
     path('', include('apps.core.urls')),
     
-    # Other app endpoints
-    path('api/chat/', include('apps.chat.urls')),
-    path('api/notifications/', include('apps.notifications.urls')),
-    path('api/files/', include('apps.files.urls')),
-    path('api/analytics/', include('apps.analytics.urls')),
-    path('api/courses/', include('apps.courses.urls')),
-    path('api/payments/', include('apps.payments.urls')),
-    path('api/live-classes/', include('apps.live_classes.urls')),
-    
     # Django Allauth (fallback for any endpoints we don't override)
     path('api/auth/', include('allauth.urls')),
 ]
