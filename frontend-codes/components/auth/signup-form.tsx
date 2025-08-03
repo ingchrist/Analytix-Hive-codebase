@@ -32,6 +32,7 @@ export function SignupForm({ onSubmit, onLoginClick, onGoogleSignIn, isLoading =
       last_name: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   })
 
@@ -136,6 +137,20 @@ export function SignupForm({ onSubmit, onLoginClick, onGoogleSignIn, isLoading =
                   </ul>
                 </div>
               )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">
+                Confirm Password
+              </Label>
+              <PasswordInput
+                id="confirmPassword"
+                placeholder="Confirm your password"
+                className="h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                {...register("confirmPassword")}
+                disabled={isFormLoading}
+              />
+              {errors.confirmPassword && <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>}
             </div>
 
             <div className="space-y-3 pt-2">

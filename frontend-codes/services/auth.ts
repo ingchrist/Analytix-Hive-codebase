@@ -35,8 +35,8 @@ export const signupUser = async (data: SignupFormData): Promise<SignupResponse> 
       last_name: data.last_name,
       email: data.email,
       password: data.password,
-      password_confirm: data.password,
-      user_type: 'student', // Default to student type
+      password_confirm: data.confirmPassword,
+      user_type: data.user_type || 'student', // Use provided user_type or default to student
       phone_number: '', // Optional field
     })
     return response
