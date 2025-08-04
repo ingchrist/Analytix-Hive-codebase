@@ -21,14 +21,7 @@ export function middleware(request: NextRequest) {
   const protectedRoutes = [
     '/dashboard',
     '/learning',
-    '/achievements',
-    '/course',
-    '/lecture',
-    '/profile',
-    '/settings',
-    '/purchases',
-    '/cart',
-    '/wishlist'
+    '/courses'
   ]
   
   // Check if the current path is public

@@ -1,5 +1,3 @@
-// import { ThemeProvider } from "@/app/providers/theme-provider"
-
 import Footer from "@/components/shared/footer";
 
 export const metadata = {

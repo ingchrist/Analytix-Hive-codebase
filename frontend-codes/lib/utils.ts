@@ -121,16 +121,8 @@ export const getApiUrl = () => {
 export const isProtectedRoute = (pathname: string): boolean => {
   const protectedRoutes = [
     '/dashboard',
-    '/student',
-    '/course',
-    '/lecture',
     '/learning',
-    '/achievements',
-    '/profile',
-    '/settings',
-    '/purchases',
-    '/cart',
-    '/wishlist'
+    '/courses'
   ]
   
   const publicRoutes = [
