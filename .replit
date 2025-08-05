@@ -8,13 +8,13 @@ packages = ["nano", "gh"]
 runButton = "Start Full Stack"
 
 [[workflows.workflow]]
-name = "Start Backend Mock"
+name = "Start Backend Django"
 author = 45744958
 mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd backend-codes-gd && npm install && npm run dev"
+args = "cd backend-codes-gd && source venv/bin/activate && pip install -r requirements.txt && python3 manage.py makemigrations && python manage.py migrate && python manage.py createsuperuser && python manage.py runserver"
 
 [[workflows.workflow]]
 name = "Start Frontend"
@@ -32,7 +32,7 @@ mode = "parallel"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd backend-codes-gd && npm run dev"
+args = "cd backend-codes-gd && source venv/bin/activate && pip install -r requirements.txt && python3 manage.py makemigrations && python manage.py migrate && python manage.py createsuperuser && python manage.py runserver"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
