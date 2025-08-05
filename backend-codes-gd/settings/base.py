@@ -21,6 +21,17 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
+# Allow all Replit subdomains in development
+import os
+if os.environ.get('REPL_SLUG'):
+    import re
+    ALLOWED_HOSTS += ['.replit.dev', '.repl.co']
+    # Allow any *.replit.dev subdomain
+    ALLOWED_HOSTS_PATTERNS = [
+        re.compile(r'.*\.replit\.dev$'),
+        re.compile(r'.*\.repl\.co$'),
+    ]
+
 # Application definition
 DJANGO_APPS = [
     'django.contrib.admin',
