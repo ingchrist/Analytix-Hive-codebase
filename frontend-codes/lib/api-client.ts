@@ -20,11 +20,14 @@ class ApiClient {
   private baseURL: string
 
   constructor() {
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://0.0.0.0:8000';
-    this.baseURL = API_BASE_URL
+    // Use the current host for the API base URL in development
+    const baseURL = process.env.NEXT_PUBLIC_API_URL || 
+                   (typeof window !== 'undefined' 
+                     ? `${window.location.protocol}//${window.location.hostname}:8000`
+                     : 'http://0.0.0.0:8000')
 
     this.client = axios.create({
-      baseURL: this.baseURL,
+      baseURL,
       timeout: 30000,
       headers: {
         'Content-Type': 'application/json',

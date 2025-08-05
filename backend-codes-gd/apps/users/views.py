@@ -41,30 +41,41 @@ class UserRegistrationView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
     
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        
-        # Generate tokens
-        refresh = RefreshToken.for_user(user)
-        
-        # Send welcome email (async task would be better)
         try:
-            send_mail(
-                subject='Welcome to BMad LMS',
-                message=f'Welcome {user.get_full_name()}! Your account has been created successfully.',
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[user.email],
-                fail_silently=True,
-            )
-        except Exception:
-            pass  # Don't fail registration if email fails
-        
-        return Response({
-            'user': UserSerializer(user).data,
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }, status=status.HTTP_201_CREATED)
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            user = serializer.save()
+            
+            # Generate tokens
+            refresh = RefreshToken.for_user(user)
+            
+            # Send welcome email (async task would be better)
+            try:
+                send_mail(
+                    subject='Welcome to BMad LMS',
+                    message=f'Welcome {user.get_full_name()}! Your account has been created successfully.',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    fail_silently=True,
+                )
+            except Exception:
+                pass  # Don't fail registration if email fails
+            
+            return Response({
+                'user': UserSerializer(user).data,
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            }, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            # Log the error for debugging
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"User registration error: {str(e)}")
+            
+            return Response({
+                'error': 'Registration failed. Please try again.'
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserProfileView(generics.RetrieveUpdateAPIView):

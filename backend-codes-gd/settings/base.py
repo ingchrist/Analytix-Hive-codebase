@@ -206,16 +206,25 @@ REST_FRAMEWORK = {
 # CORS Settings
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://localhost:3000", 
     "http://127.0.0.1:3000",
-    "http://localhost:3001",
-    "http://127.0.0.1:3001",
+    "https://127.0.0.1:3000",
 ]
 
-# Allow all origins in development
-CORS_ALLOW_ALL_ORIGINS = DEBUG
-CORS_ALLOW_CREDENTIALS = True
+# Add Replit-specific CORS settings
+if DEBUG:
+    import os
+    repl_id = os.getenv('REPL_ID')
+    repl_owner = os.getenv('REPL_OWNER')
+    if repl_id and repl_owner:
+        CORS_ALLOWED_ORIGINS.extend([
+            f"https://{repl_id}--5000--{repl_owner}.repl.co",
+            f"https://{repl_id}--3000--{repl_owner}.repl.co",
+            f"https://{repl_id}.{repl_owner}.repl.co",
+        ])
 
-# Allow common headers
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = DEBUG  # Only in development
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
