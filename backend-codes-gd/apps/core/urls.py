@@ -1,11 +1,9 @@
 from django.urls import path
-from . import views
+from django.http import JsonResponse
 
-app_name = 'core'
+def health_check(request):
+    return JsonResponse({'status': 'healthy', 'service': 'core'})
 
 urlpatterns = [
-    path('', views.HomeView.as_view(), name='home'),
-    path('health/', views.health_check, name='health_check'),
-    path('api-info/', views.api_info, name='api_info'),
+    path('health/', health_check, name='core_health'),
 ]
-
