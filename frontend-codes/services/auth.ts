@@ -36,7 +36,7 @@ export const signupUser = async (data: SignupFormData): Promise<SignupResponse> 
       email: data.email,
       password: data.password,
       password_confirm: data.confirmPassword,
-      user_type: data.user_type || 'student', // Use provided user_type or default to student
+      user_type: data.user_type || 'student',
       phone_number: '', // Optional field
     })
     return response
@@ -79,19 +79,9 @@ export const getCurrentUser = async (): Promise<User> => {
 }
 
 // Verify email
-export const verifyEmail = async (key: string): Promise<{ detail: string }> => {
+export const verifyEmail = async (): Promise<{ message: string }> => {
   try {
-    const response = await apiClient.post('/api/auth/registration/verify-email/', { key })
-    return response
-  } catch (error) {
-    throw error
-  }
-}
-
-// Resend email verification
-export const resendEmailVerification = async (email: string): Promise<{ detail: string }> => {
-  try {
-    const response = await apiClient.post('/api/auth/registration/resend-email/', { email })
+    const response = await apiClient.post('/api/users/verify-email/')
     return response
   } catch (error) {
     throw error
@@ -99,9 +89,9 @@ export const resendEmailVerification = async (email: string): Promise<{ detail: 
 }
 
 // Forgot password
-export const forgotPassword = async (data: ForgotPasswordFormData): Promise<{ detail: string }> => {
+export const forgotPassword = async (data: ForgotPasswordFormData): Promise<{ message: string }> => {
   try {
-    const response = await apiClient.post('/api/auth/password/reset/', data)
+    const response = await apiClient.post('/api/auth/password-reset/', { email: data.email })
     return response
   } catch (error) {
     throw error
@@ -109,13 +99,11 @@ export const forgotPassword = async (data: ForgotPasswordFormData): Promise<{ de
 }
 
 // Reset password
-export const resetPassword = async (data: ResetPasswordFormData): Promise<{ detail: string }> => {
+export const resetPassword = async (data: ResetPasswordFormData, uid: string, token: string): Promise<{ message: string }> => {
   try {
-    const response = await apiClient.post('/api/auth/password/reset/confirm/', {
-      uid: data.token.split('-')[0], // Extract uid from token
-      token: data.token.split('-')[1], // Extract token from token
-      new_password1: data.password,
-      new_password2: data.confirmPassword,
+    const response = await apiClient.post(`/api/auth/password-reset-confirm/${uid}/${token}/`, {
+      new_password: data.password,
+      confirm_password: data.confirmPassword,
     })
     return response
   } catch (error) {
@@ -124,12 +112,11 @@ export const resetPassword = async (data: ResetPasswordFormData): Promise<{ deta
 }
 
 // Change password
-export const changePassword = async (oldPassword: string, newPassword: string): Promise<{ detail: string }> => {
+export const changePassword = async (oldPassword: string, newPassword: string): Promise<{ message: string }> => {
   try {
-    const response = await apiClient.post('/api/auth/password/change/', {
+    const response = await apiClient.post('/api/auth/change-password/', {
       old_password: oldPassword,
-      new_password1: newPassword,
-      new_password2: newPassword,
+      new_password: newPassword,
     })
     return response
   } catch (error) {
@@ -140,7 +127,7 @@ export const changePassword = async (oldPassword: string, newPassword: string): 
 // Update user profile
 export const updateUserProfile = async (data: Partial<User>): Promise<User> => {
   try {
-    const response = await apiClient.patch<User>('/api/users/me/', data)
+    const response = await apiClient.patch<User>('/api/users/profile/', data)
     return response
   } catch (error) {
     throw error

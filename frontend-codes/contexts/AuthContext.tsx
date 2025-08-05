@@ -71,7 +71,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (!isLoading) {
       handleRouteProtection()
     }
-  }, [isLoading, isAuthenticated, router])
+  }, [isLoading, isAuthenticated])
 
   const initializeAuth = async () => {
     try {
@@ -105,14 +105,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     // If user is not authenticated and trying to access protected route
     if (!isAuthenticated && isProtectedRoute(currentPath)) {
-      router.push('/auth')
+      if (currentPath !== '/auth') {
+        router.push('/auth')
+      }
       return
     }
 
     // If user is authenticated and on auth page, redirect to dashboard
     if (isAuthenticated && currentPath === '/auth') {
       const redirectPath = getRedirectPath(user?.user_type)
-      router.push(redirectPath)
+      router.replace(redirectPath) // Use replace instead of push to avoid history issues
       return
     }
   }
@@ -141,20 +143,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   const login = (authToken: string, userData: User) => {
-    setToken(authToken)
-    setUser(userData)
-    
-    // Store in localStorage
+    // Store in localStorage first
     tokenStorage.setToken(authToken)
     userStorage.setUser(userData)
 
-    // Redirect to appropriate dashboard
-    const redirectPath = getRedirectPath(userData.user_type)
-    router.push(redirectPath)
-    
+    // Update state
+    setToken(authToken)
+    setUser(userData)
+
     // Show user type-specific welcome message
     const userTypeDisplay = userData.user_type.charAt(0).toUpperCase() + userData.user_type.slice(1)
-    
+
     if (userData.user_type === 'instructor' || userData.user_type === 'admin') {
       toast.success(`Welcome back, ${userData.first_name}!`, {
         description: `${userTypeDisplay} dashboard will be available soon. For now, you're redirected to the student dashboard.`,
@@ -165,20 +164,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
         description: `You're now logged in to your ${userTypeDisplay} dashboard.`,
       })
     }
+
+    // Redirect to appropriate dashboard after a small delay to ensure state updates
+    setTimeout(() => {
+      const redirectPath = getRedirectPath(userData.user_type)
+      router.replace(redirectPath)
+    }, 100)
   }
 
   const logout = () => {
     // Clear state
     setToken(null)
     setUser(null)
-    
+
     // Clear storage
     tokenStorage.clearTokens()
     userStorage.removeUser()
-    
+
     // Redirect to auth page
     router.push('/auth')
-    
+
     toast.success('Logged out successfully')
   }
 
@@ -192,7 +197,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const checkAuth = async (): Promise<boolean> => {
     if (!token) return false
-    
+
     try {
       const isValid = await verifyToken(token)
       if (!isValid) {

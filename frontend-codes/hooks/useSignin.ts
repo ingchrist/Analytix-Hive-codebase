@@ -13,21 +13,21 @@ export const useSigninMutation = () => {
 
   return useMutation({
     mutationFn: signinUser,
-    
+
     onSuccess: (data) => {
       console.log('Login successful:', data)
-      
+
       // Use the auth context login method with correct response format
       login(data.access, data.user)
-      
+
       toast.success('Welcome back!', {
         description: `Successfully logged in as ${data.user.first_name}`,
       })
     },
-    
+
     onError: (error) => {
       console.error('Signin failed:', error)
-      
+
       if (isApiError(error)) {
         // Handle field-specific validation errors
         if (error.field_errors) {

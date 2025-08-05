@@ -84,8 +84,8 @@ class ApiClient {
       } else if (data?.error) {
         message = data.error
       } else if (data?.non_field_errors) {
-        message = Array.isArray(data.non_field_errors) 
-          ? data.non_field_errors[0] 
+        message = Array.isArray(data.non_field_errors)
+          ? data.non_field_errors[0]
           : data.non_field_errors
       } else if (typeof data === 'string') {
         message = data
@@ -155,8 +155,8 @@ class ApiClient {
 
   // File upload method
   async uploadFile<T = any>(
-    url: string, 
-    file: File, 
+    url: string,
+    file: File,
     onUploadProgress?: (progressEvent: any) => void
   ): Promise<T> {
     const formData = new FormData()

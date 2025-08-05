@@ -5,152 +5,67 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-// Storage utilities
-export const storage = {
-  get: (key: string) => {
-    if (typeof window !== 'undefined') {
-      try {
-        const item = localStorage.getItem(key)
-        return item ? JSON.parse(item) : null
-      } catch (error) {
-        console.error(`Error getting item from localStorage:`, error)
-        return null
-      }
-    }
-    return null
-  },
-
-  set: (key: string, value: any) => {
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(key, JSON.stringify(value))
-      } catch (error) {
-        console.error(`Error setting item to localStorage:`, error)
-      }
-    }
-  },
-
-  remove: (key: string) => {
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.removeItem(key)
-      } catch (error) {
-        console.error(`Error removing item from localStorage:`, error)
-      }
-    }
-  },
-
-  clear: () => {
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.clear()
-      } catch (error) {
-        console.error(`Error clearing localStorage:`, error)
-      }
-    }
-  }
-}
-
-// Token utilities
+// Token storage utilities
 export const tokenStorage = {
-  getToken: () => storage.get('auth_token'),
-  setToken: (token: string) => storage.set('auth_token', token),
-  removeToken: () => storage.remove('auth_token'),
-  
-  getRefreshToken: () => storage.get('refresh_token'),
-  setRefreshToken: (token: string) => storage.set('refresh_token', token),
-  removeRefreshToken: () => storage.remove('refresh_token'),
+  getToken: (): string | null => {
+    if (typeof window === 'undefined') return null
+    return localStorage.getItem('access_token')
+  },
 
-  clearTokens: () => {
-    storage.remove('auth_token')
-    storage.remove('refresh_token')
-    storage.remove('user')
-  }
-}
+  setToken: (token: string): void => {
+    if (typeof window === 'undefined') return
+    localStorage.setItem('access_token', token)
+  },
 
-// Utility to completely clear authentication data
-export const clearAuthData = () => {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('auth_token')
+  getRefreshToken: (): string | null => {
+    if (typeof window === 'undefined') return null
+    return localStorage.getItem('refresh_token')
+  },
+
+  setRefreshToken: (token: string): void => {
+    if (typeof window === 'undefined') return
+    localStorage.setItem('refresh_token', token)
+  },
+
+  clearTokens: (): void => {
+    if (typeof window === 'undefined') return
+    localStorage.removeItem('access_token')
     localStorage.removeItem('refresh_token')
-    localStorage.removeItem('user')
-    localStorage.removeItem('access_token') // Legacy token name
-    console.log('Authentication data cleared')
   }
 }
 
-// User utilities
+// User storage utilities
 export const userStorage = {
-  getUser: () => storage.get('user'),
-  setUser: (user: any) => storage.set('user', user),
-  removeUser: () => storage.remove('user'),
-}
+  getUser: (): any | null => {
+    if (typeof window === 'undefined') return null
+    const user = localStorage.getItem('user')
+    return user ? JSON.parse(user) : null
+  },
 
-// Format utilities
-export const formatError = (error: any): string => {
-  if (typeof error === 'string') return error
-  
-  if (error?.response?.data?.message) return error.response.data.message
-  if (error?.response?.data?.error) return error.response.data.error
-  if (error?.response?.data?.detail) return error.response.data.detail
-  
-  if (error?.message) return error.message
-  
-  return 'An unexpected error occurred'
-}
+  setUser: (user: any): void => {
+    if (typeof window === 'undefined') return
+    localStorage.setItem('user', JSON.stringify(user))
+  },
 
-// Validation utilities
-export const validateEmail = (email: string): boolean => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
-}
-
-export const validatePassword = (password: string): boolean => {
-  return password.length >= 8 && 
-         /[a-zA-Z]/.test(password) && 
-         /[0-9]/.test(password) && 
-         /[^a-zA-Z0-9]/.test(password)
-}
-
-// API utilities
-export const getApiUrl = () => {
-  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-}
-
-// Route utilities
-export const isProtectedRoute = (pathname: string): boolean => {
-  const protectedRoutes = [
-    '/dashboard',
-    '/learning',
-    '/courses'
-  ]
-  
-  const publicRoutes = [
-    '/auth',
-    '/home',
-    '/',
-    '/about',
-    '/contact'
-  ]
-  
-  // If it's explicitly a public route, it's not protected
-  if (publicRoutes.some(route => pathname === route || pathname.startsWith(route + '/'))) {
-    return false
+  removeUser: (): void => {
+    if (typeof window === 'undefined') return
+    localStorage.removeItem('user')
   }
-  
+}
+
+// Route protection
+export const isProtectedRoute = (pathname: string): boolean => {
+  const protectedRoutes = ['/dashboard', '/learning', '/student']
   return protectedRoutes.some(route => pathname.startsWith(route))
 }
 
-export const getRedirectPath = (userType?: string): string => {
-  // TODO: Implement separate dashboards for instructor and admin
-  // For now, all users are redirected to student dashboard
+// Get redirect path based on user type
+export const getRedirectPath = (userType?: 'student' | 'instructor' | 'admin'): string => {
   switch (userType) {
     case 'instructor':
-      // TODO: return '/instructor/dashboard' when instructor dashboard is ready
-      return '/dashboard' // Temporary redirect to student dashboard
+      return '/dashboard' // All users go to dashboard for now
     case 'admin':
-      // TODO: return '/admin/dashboard' when admin dashboard is ready
-      return '/dashboard' // Temporary redirect to student dashboard
+      return '/dashboard'
     case 'student':
     default:
       return '/dashboard'
