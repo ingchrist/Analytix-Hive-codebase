@@ -14,6 +14,9 @@ urlpatterns = [
     # User authentication API endpoints
     path('api/auth/', include('apps.users.urls')),
     
+    # User management API endpoints
+    path('api/users/', include('apps.users.user_urls')),
+    
     # Core API endpoints  
     path('api/', include('apps.core.urls')),
     
