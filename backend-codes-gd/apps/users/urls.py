@@ -15,34 +15,6 @@ from apps.users.views import (
     instructor_students,
 )
 
-# Remove app_name to avoid namespace conflicts
-
-
-
-urlpatterns = [
-    # Authentication endpoints
-    path('login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('register/', UserRegistrationView.as_view(), name='user_register'),
-    path('logout/', LogoutView.as_view(), name='logout'),
-    
-    # User profile endpoints
-    path('profile/', UserProfileView.as_view(), name='user_profile'),
-    path('users/', UserListView.as_view(), name='user_list'),
-    path('users/<int:pk>/', UserDetailView.as_view(), name='user_detail'),
-    
-    # Password management
-    path('change-password/', ChangePasswordView.as_view(), name='change_password'),
-    path('password-reset/', PasswordResetRequestView.as_view(), name='password_reset'),
-    path('password-reset-confirm/<str:uid>/<str:token>/', 
-         PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    
-    # Additional endpoints
-    path('verify-email/', verify_email, name='verify_email'),
-    path('stats/', user_stats, name='user_stats'),
-    path('instructor/students/', instructor_students, name='instructor_students'),
-]
-
 urlpatterns = [
     # Authentication
     path('api/auth/login/', CustomTokenObtainPairView.as_view(), name='login'),
