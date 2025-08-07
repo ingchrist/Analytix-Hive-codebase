@@ -45,7 +45,9 @@ export default function AuthPage() {
 
   // Redirect if already authenticated
   useEffect(() => {
+    console.log('Auth page redirect check:', { isLoading, isAuthenticated })
     if (!isLoading && isAuthenticated) {
+      console.log('Redirecting from auth page to /dashboard')
       router.push('/dashboard')
     }
   }, [isAuthenticated, isLoading, router])

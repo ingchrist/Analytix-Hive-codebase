@@ -143,13 +143,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   const login = (authToken: string, userData: User) => {
+    console.log('Login function called with:', { authToken, userData })
+    
     // Store in localStorage first
     tokenStorage.setToken(authToken)
     userStorage.setUser(userData)
+    
+    // Debug: Check if tokens were stored properly
+    console.log('Tokens after storage:', {
+      storedAccessToken: tokenStorage.getToken(),
+      storedUser: userStorage.getUser()
+    })
 
-    // Update state
+    // Update state immediately
     setToken(authToken)
     setUser(userData)
+    
+    console.log('State updated:', { token: authToken, user: userData })
+    console.log('isAuthenticated will be:', !!(authToken && userData))
 
     // Show user type-specific welcome message
     const userTypeDisplay = userData.user_type.charAt(0).toUpperCase() + userData.user_type.slice(1)
@@ -165,11 +176,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       })
     }
 
-    // Redirect to appropriate dashboard after a small delay to ensure state updates
-    setTimeout(() => {
-      const redirectPath = getRedirectPath(userData.user_type)
-      router.replace(redirectPath)
-    }, 100)
+    // Force immediate redirect without delay
+    const redirectPath = getRedirectPath(userData.user_type)
+    console.log('Redirecting to:', redirectPath)
+    
+    // Use window.location.replace for immediate redirect
+    window.location.replace(redirectPath)
   }
 
   const logout = () => {

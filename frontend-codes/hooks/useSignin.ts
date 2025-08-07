@@ -16,6 +16,8 @@ export const useSigninMutation = () => {
 
     onSuccess: (data) => {
       console.log('Login successful:', data)
+      console.log('Access token:', data.access)
+      console.log('User data:', data.user)
 
       // Use the auth context login method with correct response format
       login(data.access, data.user)
