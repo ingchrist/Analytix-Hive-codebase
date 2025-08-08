@@ -131,13 +131,38 @@ WEBPACK_LOADER = {
 }
 
 
-# Database - Default SQLite configuration
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Database
+# https://docs.djangoproject.com/en/5.1/ref/settings/#databases 
+
+DB = os.getenv("DB")
+# If you set DB to True you will have the postgres database, if set DB to False, you will the sqlite3 databse.
+
+
+
+
+
+if DB in ["True", True]:
+    print("currently using postgresql as database")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'railway',
+            'USER': 'postgres',
+            'PASSWORD': os.getenv("PG_PASSWORD"),
+            'HOST': os.getenv("PG_HOST"),
+            'PORT': os.getenv("PG_PORT"),  
+        }
     }
-}
+
+
+else:
+    print("currently using sqlite3 as database")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
