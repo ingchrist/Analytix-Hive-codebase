@@ -11,9 +11,17 @@
     "django:dev": "python manage.py runserver 0.0.0.0:8000",
     "test": "echo 'Run Django tests with: python manage.py test'"
   },
-  "dependencies": {},
-  "devDependencies": {},
-  "keywords": ["django", "lms", "education", "backend", "mock", "development"],
+  "dependencies": {
+    "@railway/cli": "^4.6.1"
+  },
+  "keywords": [
+    "django",
+    "lms",
+    "education",
+    "backend",
+    "mock",
+    "development"
+  ],
   "author": "BMad LMS Team",
   "license": "MIT",
   "engines": {
