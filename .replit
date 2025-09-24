@@ -1,0 +1,82 @@
+modules = ["python-3.12", "nodejs-20", "web"]
+
+[nix]
+channel = "stable-25_05"
+packages = ["nano", "gh"]
+
+[workflows]
+runButton = "Start Development Stack"
+
+[[workflows.workflow]]
+name = "Start Backend Django"
+author = 45744958
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd backend-codes-gd && source venv/bin/activate && pip install -r requirements.txt && python3 manage.py makemigrations && python manage.py migrate && python manage.py createsuperuser && python manage.py runserver"
+
+[[workflows.workflow]]
+name = "Start Frontend"
+author = 45744958
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd frontend-codes && npm install && npm run dev"
+
+[[workflows.workflow]]
+name = "Start Full Stack"
+author = 45744958
+mode = "parallel"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd backend-codes-gd && source venv/bin/activate && pip install -r requirements.txt && python3 manage.py makemigrations && python manage.py migrate && python manage.py createsuperuser && python manage.py runserver"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd frontend-codes && npm run dev"
+
+[[workflows.workflow]]
+name = "Start Backend Only"
+author = 46019763
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd backend-codes-gd && python3 manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+[[workflows.workflow]]
+name = "Start Frontend Only"
+author = 46019763
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd frontend-codes && npm install && npm run dev"
+
+[[workflows.workflow]]
+name = "Start Development Stack"
+author = 46019763
+mode = "parallel"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd backend-codes-gd && python3 manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd frontend-codes && npm install && npm run dev"
+
+[[ports]]
+localPort = 3000
+externalPort = 3000
+
+[[ports]]
+localPort = 3001
+externalPort = 3001
+
+[[ports]]
+localPort = 8000
+externalPort = 80
